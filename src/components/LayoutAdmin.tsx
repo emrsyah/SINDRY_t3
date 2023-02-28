@@ -6,7 +6,7 @@ interface Props {
 }
 
 const LayoutAdmin = ({ children }: Props) => {
-  return <div>ini {children}</div>;
+  return <div>{children}</div>;
 };
 
 export default LayoutAdmin;

@@ -10,5 +10,9 @@ const Beranda: NextPageWithLayout = () => {
 export default Beranda;
 
 Beranda.getLayout = function getLayout(page: ReactElement) {
-  return <LayoutAdmin>{page}</LayoutAdmin>;
+  return (
+    <LayoutAdmin>
+      {page}
+    </LayoutAdmin>
+  );
 };
