@@ -28,11 +28,10 @@
       },
       "externalBin": [],
       "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
+        "icons/sindry-new-icon.svg",
+        "icons/sindry32.png",
+        "icons/sindry128.png",
+        "icons/sindryico.ico"
       ],
       "identifier": "tauri.t3.app",
       "longDescription": "",
@@ -63,7 +62,7 @@
         "fullscreen": false,
         "height": 600,
         "resizable": true,
-        "title": "Sinfry",
+        "title": "Sindry",
         "width": 800
       }
     ]
