@@ -1,0 +1,3 @@
+CATATAN PER COMMIT:
+
+1. Perubahan kali ini dari auth yg suka tiba2 ilang sessionnya jadi ada terus, ini nambah schema baru di prisma tapi gak dipake sebenarnya, bisa dari yg lama juga

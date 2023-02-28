@@ -6,41 +6,40 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import sha1 from "sha1";
 import { prisma } from "../../../server/db/client";
 import { trpc } from "../../../utils/trpc.js";
+import { Role } from '../../../types/next-auth';
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
   callbacks: {
-    async jwt({ token, account, user }) {
-      // Persist the OAuth access_token to the token right after signin
-      if (account) {
+    async jwt({ token, user }) {
+      /* Step 1: update the token based on the user object */
+      if (user) {
         token.role = user.role;
-        token.accessToken = account.access_token;
       }
       return token;
     },
-    async session({ session, token, user }) {
-      // console.log({session, user, token})
-      // Send properties to the client, like an access_token from a provider.
-      session.accessToken = token.accessToken;
-      session.user.role = token.role;
-      // session.user.role = user.
+    session({ session, token }) {
+      /* Step 2: update the session.user based on the token object */
+      if (token && session.user) {
+        session.user.role = token.role;
+      }
       return session;
     },
-    // session({ session, user }) {
-    //   console.log(session);
-    //   console.log(user);
-    //   if (session.user) {
-    //     session.user.id = user.id;
+    // async jwt({ token, account, user }) {
+    //   // Persist the OAuth access_token to the token right after signin
+    //   console.log({ token, account, user });
+    //   if (account) {
+    //     token.role = user?.role
+    //     token.accessToken = account.access_token;
     //   }
-    //   return session;
-    // },
-    // jwt: async ({ token, user }) => {
-    //   user && (token.user = user);
     //   return token;
     // },
-    // session: async ({ session, token }) => {
+    // async session({ session, token, user }) {
+    //   console.log({ session, user, token });
+    //   // Send properties to the client, like an access_token from a provider.
     //   session.accessToken = token.accessToken;
-    //   session.user?.id = token.id;
+    //   session.user?.role = token.role;
+    //   // session.user.role = user.
     //   return session;
     // },
     async signIn({ user, account, profile, email, credentials }) {
@@ -77,7 +76,6 @@ export const authOptions: NextAuthOptions = {
           email: string;
           password: string;
         };
-        console.log({ email, password });
         const sha1pass = sha1(password);
         const user = await prisma.user.findFirst({
           where: {
@@ -85,31 +83,30 @@ export const authOptions: NextAuthOptions = {
             password: sha1pass,
           },
         });
-        console.log("dua log");
-        console.log(user);
         if (!user) return null;
-        // console.log({
-        //   id: user.id,
-        //   name: user.name,
-        //   email: user.email,
-        // });
         return {
           id: user.id,
           name: user.name,
           email: user.email,
           image: user.image,
-          role: user.role,
+          role: user.role as Role,
         };
       },
     }),
     // ...add more providers here
   ],
   jwt: {
-    maxAge: 60 * 60 * 24 * 30,
+    maxAge: 30 * 24 * 60 * 60,
   },
   session: {
     strategy: "jwt",
   },
+  // cookie: {
+  //   secure: process.env.NODE_ENV && process.env.NODE_ENV === "production",
+  // },
+  // cookies: {
+  //   sessionToken :
+  // }
 };
 
 export default NextAuth(authOptions);

@@ -48,6 +48,16 @@ model user {
   session       session[]
 }
 
+model users {
+  userId        Int         @id @default(autoincrement())
+  registeredAt  DateTime   @default(now())
+  firstName     String      @db.VarChar(250)
+  lastName      String      @db.VarChar(250)
+  email         String      @db.VarChar(250)
+  password      String      @db.VarChar(250)
+  isActive      String      @default("1") @db.Char(1)
+}
+
 model verificationtoken {
   identifier String
   token      String   @unique(map: "VerificationToken_token_key")
