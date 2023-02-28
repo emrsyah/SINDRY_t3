@@ -1,3 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+*{
+    font-family: "Inter", "Raleway";
+}
+
+.raleway{
+    font-family: "Raleway";
+}
+
+@layer components {
+  .btn-base {
+    @apply raleway rounded-full py-2  px-6 text-sm font-bold;
+  }
+  .btn-primary {
+    @apply btn-base bg-indigo-500 text-white;
+  }
+  .btn-secondary {
+    @apply btn-base border-[1.3px] border-indigo-500 text-indigo-500 ;
+  }
+  .btn-gradient {
+    @apply btn-base bg-gray-800 text-white transition-all hover:-translate-y-1 hover:bg-gradient-to-tl hover:from-indigo-600 hover:via-pink-600 hover:to-orange-500 hover:shadow-xl;
+  }
+  .highlight {
+    @apply text-indigo-500;
+  }
+  .input{
+    @apply rounded border-[1.2px] border-gray-400 p-2 text-sm outline-none
+  }
+}
