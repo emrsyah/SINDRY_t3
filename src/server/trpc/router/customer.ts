@@ -16,7 +16,7 @@ export const customerRouter = router({
       })
     )
     .query(({ ctx, input }) => {
-      return ctx.prisma.outlets.findUnique({
+      return ctx.prisma.customers.findUnique({
         where: {
           id: input.id,
         },
@@ -47,10 +47,12 @@ export const customerRouter = router({
         name: z.string(),
         address: z.string(),
         contact: z.string(),
+        gender: z.enum(["L", "P"]),
+        outlet_id: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.outlets.update({
+      return ctx.prisma.customers.update({
         where: {
           id: input.id,
         },
@@ -58,6 +60,8 @@ export const customerRouter = router({
           name: input.name,
           address: input.address,
           contact: input.contact,
+          gender: input.gender,
+          outlet_id: input.outlet_id
         },
       });
     }),

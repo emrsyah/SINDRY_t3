@@ -1,3 +1,5 @@
 CATATAN PER COMMIT:
 
 1. Perubahan kali ini dari auth yg suka tiba2 ilang sessionnya jadi ada terus, ini nambah schema baru di prisma tapi gak dipake sebenarnya, bisa dari yg lama juga
+
+2. Udah bisa edit tapi error di ts nya, bagian ubah outlet jadi ada field value ama label

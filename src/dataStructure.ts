@@ -1,4 +1,4 @@
-export interface Outlet {
+export type Outlet  = {
   id: number;
   name: string;
   address: string;
