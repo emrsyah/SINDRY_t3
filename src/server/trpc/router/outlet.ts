@@ -18,6 +18,24 @@ export const outletRouter = router({
         },
       });
     }),
+  create: protectedProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        address: z.string(),
+        contact: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      return ctx.prisma.outlets.create({
+        data: {
+          name: input.name,
+          address: input.address,
+          contact: input.contact,
+          total_sales: 0,
+        },
+      });
+    }),
   update: protectedProcedure
     .input(
       z.object({
