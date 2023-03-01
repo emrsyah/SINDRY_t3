@@ -116,7 +116,7 @@ export default function Table({
         <button
           disabled={!canPreviousPage}
           onClick={() => previousPage()}
-          className={`${!canPreviousPage && "text-gray-500"}`}
+          className={`${!canPreviousPage && "text-gray-400"}`}
         >
           {/* <Icon
             icon="cil:chevron-circle-left-alt"
