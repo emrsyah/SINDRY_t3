@@ -93,7 +93,7 @@ export default function Table({
               <tr
                 key={i}
                 {...row.getRowProps()}
-                className="cursor-pointer border-y-[1px] border-gray-300 font-medium hover:bg-indigo-50"
+                className="cursor-pointer border-y-[1px] border-gray-300 font-medium text-gray-800 hover:bg-indigo-50"
                 onClick={() => rowClickHandler(row.original.id)}
               >
                 {row.cells.map((cell: any, i: number) => {

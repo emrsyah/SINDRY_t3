@@ -26,17 +26,27 @@ const OutletDetail: NextPageWithLayout = () => {
       path: `/app/admin/outlet/${oid}`,
     },
   ];
-  
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<Outlet>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const { data, isLoading, isError } = trpc.outlet.getById.useQuery({
-    id: parseInt(oid as string),
-  });
+  const { data, isLoading, isError } = trpc.outlet.getById.useQuery(
+    {
+      id: parseInt(oid as string),
+    },
+    {
+      onSuccess: (data) => {
+        setValue("name", data?.name as string)
+        setValue("address", data?.address as string)
+        setValue("contact", data?.contact as string)
+      },
+    }
+  );
 
   const updateOutlet = trpc.outlet.update.useMutation({
     onSuccess: () => {
@@ -142,9 +152,7 @@ const OutletDetail: NextPageWithLayout = () => {
                 disabled
                 placeholder="Alamat"
                 defaultValue={data?.total_sales}
-                className={`input-disabled ${
-                  errors.address ? "!border-red-500" : null
-                } `}
+                className={`input-disabled`}
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -154,9 +162,7 @@ const OutletDetail: NextPageWithLayout = () => {
                 disabled
                 placeholder="Kontak"
                 defaultValue={dayjs(data?.created_at).format("DD MMM YYYY")}
-                className={`input-disabled ${
-                  errors.contact ? "!border-red-500" : null
-                } `}
+                className={`input-disabled`}
               />
             </div>
           </div>
