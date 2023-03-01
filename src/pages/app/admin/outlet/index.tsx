@@ -7,6 +7,7 @@ import { trpc } from "../../../../utils/trpc";
 import dayjs from "dayjs";
 import Table from "../../../../components/Table";
 import EmptyTable from "../../../../components/EmptyTable";
+import Link from "next/link";
 
 const Index: NextPageWithLayout = () => {
   const [filterInput, setFilterInput] = useState<string>("");
@@ -56,9 +57,9 @@ const Index: NextPageWithLayout = () => {
             ({data?.length})
           </span>
         </h3>
-        <button className="btn-primary rounded px-3 font-semibold">
+        <Link href={'outlet/new'} className="btn-primary rounded px-3 font-semibold">
           <UilPlus size="20" /> Tambah Outlet
-        </button>
+        </Link>
       </div>
       <div className="my-3">
         <input

@@ -76,7 +76,7 @@ const SidebarAdmin = () => {
       <div className="flex items-center gap-3">
         <Image
           src={
-            "https://avatars.dicebear.com/api/adventurer-neutral/your-custom-seed.svg"
+            `https://avatars.dicebear.com/api/adventurer-neutral/${sessionData?.user?.email}.svg`
           }
           alt="profile"
           width={36}

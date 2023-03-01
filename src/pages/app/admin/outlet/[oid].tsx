@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
 import LayoutAdmin from "../../../../components/LayoutAdmin";
 import { ReactElement } from "react";
@@ -10,16 +10,29 @@ import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { UilTrashAlt } from "@iconscout/react-unicons";
 import DeleteConfirmationModal from "../../../../components/DeleteConfirmationModal";
+import BreadCrumbs from "../../../../components/BreadCrumbs";
 
 const OutletDetail: NextPageWithLayout = () => {
   const router = useRouter();
   const { oid } = router.query;
+
+  const breadItems = [
+    {
+      name: "Outlet",
+      path: `/app/admin/outlet`,
+    },
+    {
+      name: "Detail Outlet",
+      path: `/app/admin/outlet/${oid}`,
+    },
+  ];
+  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Outlet>();
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const { data, isLoading, isError } = trpc.outlet.getById.useQuery({
     id: parseInt(oid as string),
@@ -46,13 +59,23 @@ const OutletDetail: NextPageWithLayout = () => {
 
   return (
     <>
-      <DeleteConfirmationModal isOpen={isOpen} type="outlet" setIsOpen={setIsOpen} id={parseInt(oid as string)} />
+      <DeleteConfirmationModal
+        isOpen={isOpen}
+        type="outlet"
+        setIsOpen={setIsOpen}
+        id={parseInt(oid as string)}
+      />
+      <BreadCrumbs items={breadItems} />
       <form onSubmit={submitHandler}>
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold">Detail Outlet</h3>
           <div className="flex items-center gap-2">
             <button className="btn-primary rounded">Simpan Data</button>
-            <button type="button" onClick={()=>setIsOpen(true)} className="btn-secondary rounded p-2 hover:border-red-500 hover:bg-red-50 hover:text-red-500">
+            <button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className="btn-secondary rounded p-2 hover:border-red-500 hover:bg-red-50 hover:text-red-500"
+            >
               <UilTrashAlt size="20" />
             </button>
           </div>
