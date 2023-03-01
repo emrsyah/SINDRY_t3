@@ -15,5 +15,24 @@ export const outletRouter = router({
         id: input.id
       }
     })
+  }),
+  updateById: protectedProcedure.input(
+    z.object({
+      id: z.number(),
+      name: z.string(),
+      address: z.string(),
+      contact: z.string(),
+    })
+  ).mutation(({ctx, input}) => {
+    return ctx.prisma.outlets.update({
+      where: {
+        id: input.id
+      },
+      data: {
+        name: input.name,
+        address: input.address,
+        contact: input.contact,
+      }
+    })
   })
 });

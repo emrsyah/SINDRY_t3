@@ -116,7 +116,7 @@ export default function Table({
         <button
           disabled={!canPreviousPage}
           onClick={() => previousPage()}
-          className={`${!canPreviousPage && "disableArrow"}`}
+          className={`${!canPreviousPage && "text-gray-500"}`}
         >
           {/* <Icon
             icon="cil:chevron-circle-left-alt"
@@ -137,14 +137,14 @@ export default function Table({
           /> */}
           {"<"}
         </button>
-        <p className="font-medium text-gray-500">
+        <p className="font-medium text-gray-400">
           <span className="text-indigo-700">{pageIndex + 1}</span> dari{" "}
           {pageOptions.length}
         </p>
         <button
           disabled={!canNextPage}
           onClick={() => nextPage()}
-          className={`${!canNextPage && "disableArrow"}`}
+          className={`${!canNextPage && "text-gray-400"}`}
         >
           {/* <Icon
             icon="cil:chevron-circle-right-alt"

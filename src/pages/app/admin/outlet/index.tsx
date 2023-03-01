@@ -13,7 +13,7 @@ const Index: NextPageWithLayout = () => {
 
   const { data, isLoading, isError } = trpc.outlet.getAll.useQuery();
 
-  console.log(data);
+  // console.log(data);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value || "";
