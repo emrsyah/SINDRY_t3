@@ -45,6 +45,11 @@ const OutletDetail: NextPageWithLayout = () => {
         setValue("address", data?.address as string)
         setValue("contact", data?.contact as string)
       },
+      onError: (err) => {
+        toast.error("Terjadi Kesalahan")
+        console.error(err);
+        router.back()
+      }
     }
   );
 
@@ -58,7 +63,6 @@ const OutletDetail: NextPageWithLayout = () => {
   });
 
   const submitHandler = handleSubmit((data) => {
-    // console.log(data);
     updateOutlet.mutate({
       id: parseInt(oid as string),
       name: data.name,
