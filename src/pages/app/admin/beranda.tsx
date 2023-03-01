@@ -4,7 +4,7 @@ import { NextPageWithLayout } from "../../_app";
 import { ReactElement } from "react";
 
 const Beranda: NextPageWithLayout = () => {
-  return <div>Beranda</div>;
+  return <div>Berandaz</div>;
 };
 
 export default Beranda;

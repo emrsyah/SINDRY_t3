@@ -37,33 +37,156 @@ model session {
 }
 
 model user {
-  id            String    @id
+  id            String         @id
   name          String?
-  email         String?   @unique(map: "User_email_key")
-  password      String    @db.VarChar(250)
+  email         String?        @unique(map: "User_email_key")
+  password      String         @db.VarChar(250)
   role          user_role
   emailVerified DateTime?
   image         String?
   account       account[]
   session       session[]
+  outlets       outlets?       @relation(fields: [outletsId], references: [id])
+  outletsId     Int?
+  transactions  transactions[]
 }
 
-model users {
-  userId        Int         @id @default(autoincrement())
-  registeredAt  DateTime   @default(now())
-  firstName     String      @db.VarChar(250)
-  lastName      String      @db.VarChar(250)
-  email         String      @db.VarChar(250)
-  password      String      @db.VarChar(250)
-  isActive      String      @default("1") @db.Char(1)
+// model users {
+//   userId        Int         @id @default(autoincrement())
+//   registeredAt  DateTime   @default(now())
+//   firstName     String      @db.VarChar(250)
+//   lastName      String      @db.VarChar(250)
+//   email         String      @db.VarChar(250)
+//   password      String      @db.VarChar(250)
+//   isActive      String      @default("1") @db.Char(1)
+// }
+
+// model verificationtoken {
+//   identifier String
+//   token      String   @unique(map: "VerificationToken_token_key")
+//   expires    DateTime
+
+//   @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
+// }
+
+model customers {
+  id           Int              @id @default(autoincrement())
+  name         String           @db.VarChar(100)
+  address      String           @db.VarChar(100)
+  gender       customers_gender
+  contact      String           @db.VarChar(30)
+  outlet_id    Int
+  created_at   DateTime         @default(now()) @db.DateTime(0)
+  outlets      outlets          @relation(fields: [outlet_id], references: [id], onUpdate: Restrict, map: "customers_ibfk_1")
+  transactions transactions[]
+
+  @@index([outlet_id], map: "outlet_id")
 }
 
-model verificationtoken {
-  identifier String
-  token      String   @unique(map: "VerificationToken_token_key")
-  expires    DateTime
+model outlets {
+  id           Int            @id @default(autoincrement())
+  name         String         @db.VarChar(100)
+  address      String         @db.VarChar(100)
+  contact      String         @db.VarChar(30)
+  total_sales  Int
+  created_at   DateTime       @default(now()) @db.DateTime(0)
+  customers    customers[]
+  products     products[]
+  transactions transactions[]
+  user         user[]
+}
 
-  @@unique([identifier, token], map: "VerificationToken_identifier_token_key")
+model products {
+  id                  Int                   @id @default(autoincrement())
+  outlet_id           Int
+  name                String                @db.VarChar(100)
+  type                products_type
+  price               Int
+  sold                Int
+  created_at          DateTime              @default(now()) @db.DateTime(0)
+  outlets             outlets               @relation(fields: [outlet_id], references: [id], onUpdate: Restrict, map: "products_ibfk_1")
+  transaction_details transaction_details[]
+
+  @@index([outlet_id], map: "outlet_id")
+}
+
+model transaction_details {
+  id             Int          @id @default(autoincrement())
+  transaction_id Int
+  product_id     Int
+  quantity       Int
+  description    String       @db.VarChar(100)
+  transactions   transactions @relation(fields: [transaction_id], references: [id], onUpdate: Restrict, map: "transaction_details_ibfk_1")
+  products       products     @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "transaction_details_ibfk_2")
+
+  @@index([product_id], map: "product_id")
+  @@index([transaction_id], map: "transaction_id")
+}
+
+model transactions {
+  id                  Int                   @id @default(autoincrement())
+  customer_id         Int
+  created_at          DateTime              @default(now()) @db.DateTime(0)
+  total               Int
+  sub_total           Int
+  cashier_id          String
+  invoice_code        String                @db.VarChar(50)
+  outlet_id           Int
+  additional_cost     Int
+  discount            Float
+  taxes               Float
+  status              transactions_status
+  is_paid             Boolean
+  deadline            DateTime              @db.DateTime(0)
+  paid_at             DateTime              @db.DateTime(0)
+  transaction_details transaction_details[]
+  outlets             outlets               @relation(fields: [outlet_id], references: [id], onUpdate: Restrict, map: "transactions_ibfk_1")
+  customers           customers             @relation(fields: [customer_id], references: [id], onUpdate: Restrict, map: "transactions_ibfk_2")
+  user                user                  @relation(fields: [cashier_id], references: [id], onUpdate: Restrict, map: "transactions_ibfk_3")
+
+  @@index([cashier_id], map: "cashier_id")
+  @@index([customer_id], map: "customer_id")
+  @@index([outlet_id], map: "outlet_id")
+}
+
+// model users {
+//   id           Int            @id @default(autoincrement())
+//   name         String         @db.VarChar(100)
+//   username     String         @db.VarChar(100)
+//   password     String         @db.VarChar(100)
+//   outlet_id    Int
+//   role         users_role
+//   created_at   DateTime       @default(now()) @db.DateTime(0)
+//   transactions transactions[]
+//   outlets      outlets        @relation(fields: [outlet_id], references: [id], onUpdate: Restrict, map: "users_ibfk_1")
+
+//   @@index([outlet_id], map: "outlet_id")
+// }
+
+enum customers_gender {
+  L
+  P
+}
+
+enum products_type {
+  kiloan
+  selimut
+  bed_cover
+  kaos
+  lainnya
+}
+
+enum users_role {
+  admin
+  owner
+  cashier
+}
+
+enum transactions_status {
+  new
+  on_process
+  finished
+  picked_up
 }
 
 enum user_role {

@@ -14,13 +14,13 @@
 
 @layer components {
   .btn-base {
-    @apply raleway rounded-full py-2  px-6 text-sm font-bold;
+    @apply raleway rounded-full py-2  px-6 text-sm font-bold flex items-center gap-1;
   }
   .btn-primary {
-    @apply btn-base bg-indigo-500 text-white;
+    @apply btn-base bg-indigo-500 text-white hover:bg-indigo-600;
   }
   .btn-secondary {
-    @apply btn-base border-[1.3px] border-indigo-500 text-indigo-500 ;
+    @apply btn-base border-[1.3px] border-indigo-500 text-indigo-500 hover:border-indigo-600 hover:text-indigo-600 ;
   }
   .btn-gradient {
     @apply btn-base bg-gray-800 text-white transition-all hover:-translate-y-1 hover:bg-gradient-to-tl hover:from-indigo-600 hover:via-pink-600 hover:to-orange-500 hover:shadow-xl;
@@ -29,6 +29,9 @@
     @apply text-indigo-500;
   }
   .input{
-    @apply rounded border-[1.2px] border-gray-400 p-2 text-sm outline-none
+    @apply rounded border-[1.2px] border-gray-400 p-2 text-sm outline-none focus:border-indigo-500
+  }
+  .input-disabled{
+    @apply input bg-gray-100 text-gray-400
   }
 }

@@ -29,8 +29,8 @@ const Index: NextPage = () => {
     }
   }, [status]);
   // const {accessToken}  = sessionData
-  const data2 = trpc.auth.getSecretMessage.useQuery();
-  console.log(data2.isError);
+  // const data2 = trpc.auth.getSecretMessage.useQuery();
+  // console.log(data2.isError);
   const {
     register,
     handleSubmit,

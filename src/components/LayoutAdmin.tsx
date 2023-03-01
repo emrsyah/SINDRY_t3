@@ -11,7 +11,7 @@ const LayoutAdmin = ({ children }: Props) => {
       <nav>
         <SidebarAdmin />
       </nav>
-      <main className="m-6">{children}</main>
+      <main className="m-8">{children}</main>
     </div>
   );
 };

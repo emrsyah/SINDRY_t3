@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import sindryIcon from "../../public/sindryLogos.svg";
+import sindryIcon from "../../public/sindry-new-icon.svg";
 import Link from "next/link";
 
 
