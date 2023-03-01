@@ -3,7 +3,7 @@ import { Dialog } from "@headlessui/react";
 import { UilExclamationTriangle, UilTimes } from "@iconscout/react-unicons";
 import { trpc } from "../utils/trpc";
 import { toast } from "react-toastify";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 function DeleteConfirmationModal({
   id,
@@ -16,27 +16,39 @@ function DeleteConfirmationModal({
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
 }) {
-  const router = useRouter()
-
+  const router = useRouter();
 
   // * Delete Mutation
   const deleteOutlet = trpc.outlet.delete.useMutation({
     onSuccess: () => {
       toast.info("Berhasil Menghapus Data", { autoClose: 1000 });
-      router.push(`/app/admin/${type}`)
+      router.push(`/app/admin/${type}`);
     },
     onError: () => {
       toast.error("Gagal Menghapus Data", { autoClose: 1000 });
     },
   });
 
+  const deleteCustomer = trpc.customer.delete.useMutation({
+    onSuccess: () => {
+      toast.info("Berhasil Menghapus Data", { autoClose: 1000 });
+      router.push(`/app/admin/${type}`);
+    },
+    onError: () => {
+      toast.error("Gagal Menghapus Data", { autoClose: 1000 });
+    },
+  });
 
   // * Delete Button Handler
   const deleteHandler = async () => {
-    if(type === "outlet"){
-        deleteOutlet.mutate({
-            id: id
-        })
+    if (type === "outlet") {
+      deleteOutlet.mutate({
+        id: id,
+      });
+    } else if (type === "pelanggan") {
+      deleteCustomer.mutate({
+        id: id,
+      });
     }
   };
 
