@@ -7,7 +7,7 @@ import type { NextPageWithLayout } from "../../../_app";
 import { trpc } from "../../../../utils/trpc";
 import { useForm } from "react-hook-form";
 import type { Outlet, ProductType, Product } from "../../../../dataStructure";
-import { genderOptions, productTypeOptions } from "../../../../dataStructure";
+import { productTypeOptions } from "../../../../dataStructure";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { UilTrashAlt } from "@iconscout/react-unicons";

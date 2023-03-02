@@ -1,7 +1,7 @@
 import React from 'react'
 import LayoutAdmin from '../../../../components/LayoutAdmin';
-import { ReactElement } from 'react';
-import { NextPageWithLayout } from '../../../_app';
+import type { ReactElement } from 'react';
+import type { NextPageWithLayout } from '../../../_app';
 
 const Index: NextPageWithLayout = () => {
   return (

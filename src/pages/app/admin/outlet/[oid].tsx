@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import LayoutAdmin from "../../../../components/LayoutAdmin";
-import { ReactElement } from "react";
-import { NextPageWithLayout } from "../../../_app";
+import type { ReactElement } from "react";
+import type { NextPageWithLayout } from "../../../_app";
 import { trpc } from "../../../../utils/trpc";
 import { useForm } from "react-hook-form";
-import { Outlet } from "../../../../dataStructure";
+import type { Outlet } from "../../../../dataStructure";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import { UilTrashAlt } from "@iconscout/react-unicons";

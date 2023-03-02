@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import LayoutAdmin from "../../../../components/LayoutAdmin";
-import { ReactElement } from "react";
-import { NextPageWithLayout } from "../../../_app";
+import type { ReactElement } from "react";
+import type { NextPageWithLayout } from "../../../_app";
 import { trpc } from "../../../../utils/trpc";
 import { useForm } from "react-hook-form";
-import {
+import type {
   Customer,
   Gender,
-  genderOptions,
-  Outlet,
+  Outlet} from "../../../../dataStructure";
+import {
+  genderOptions
 } from "../../../../dataStructure";
-import dayjs from "dayjs";
 import { toast } from "react-toastify";
 import BreadCrumbs from "../../../../components/BreadCrumbs";
 import Select from "react-select";

@@ -1,7 +1,7 @@
 import React from "react";
 import LayoutAdmin from "../../../components/LayoutAdmin";
-import { NextPageWithLayout } from "../../_app";
-import { ReactElement } from "react";
+import type { NextPageWithLayout } from "../../_app";
+import type { ReactElement } from "react";
 
 const Beranda: NextPageWithLayout = () => {
   return <div>Berandaz</div>;
