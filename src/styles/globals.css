@@ -12,6 +12,43 @@
     font-family: "Raleway";
 }
 
+/* 
+@mixin typeBase {
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.klType{
+  @include typeBase;
+  color: $primary;
+  background: rgba($primary, 20%);
+}
+
+.bcType{
+  @include typeBase;
+  color: #f29d53;
+  background: rgba(#f29d53, 20%);
+}
+
+.sType{
+  @include typeBase;
+  color: #53f26b;
+  background: rgba(#53f26b, 20%);
+}
+
+.kType{
+  @include typeBase;
+  color: #da53f2;
+  background: rgba(#da53f2, 20%);
+}
+
+.lType{
+  @include typeBase;
+  color: #5398f2;
+  background: rgba(#5398f2, 20%);
+} */
+
+
 @layer components {
   .btn-base {
     @apply raleway rounded-full py-2  px-6 text-sm font-bold flex items-center gap-1;
@@ -33,5 +70,23 @@
   }
   .input-disabled{
     @apply input bg-gray-100 text-gray-400
+  }
+  .type-base{
+    @apply py-1 px-2 rounded
+  }
+  .klType{
+    @apply type-base text-indigo-500 bg-indigo-100
+  }
+  .bcType{
+    @apply type-base text-orange-500 bg-orange-100
+  }
+  .sType{
+    @apply type-base text-green-500 bg-green-100
+  }
+  .kType{
+    @apply type-base text-pink-500 bg-pink-100
+  }
+  .lType{
+    @apply type-base text-sky-500 bg-sky-100
   }
 }
