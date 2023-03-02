@@ -65,7 +65,7 @@
     @apply text-indigo-500;
   }
   .input {
-    @apply rounded border-[1.2px] border-gray-400 p-2 text-sm outline-none focus:border-indigo-500;
+    @apply rounded border-[1.2px] border-gray-300 p-2 text-sm outline-none focus:border-indigo-500;
   }
   .input-disabled {
     @apply input bg-gray-100 text-gray-400;
@@ -94,5 +94,32 @@
   .container {
     @apply flex flex flex-col flex-col gap-3 gap-3 rounded-md rounded-md
     py-3 py-3 px-5 px-5 text-sm text-sm shadow shadow;
+  }
+}
+
+
+.menu-pattern{
+  height: 100vh;
+  width: 100vw;
+  background-image: radial-gradient(
+    rgba(2255, 255, 255, 0.1) 9%,
+    transparent 9%
+  );;
+  background-position: 0% 0%;
+  background-size: 12vmin 12vmin;
+}
+
+.neon{
+  animation: neon 3s ease infinite;
+}
+@keyframes neon {
+  0%,
+  100% {
+      text-shadow: 0 0 10px #7000efa8, 0 0 20px #7000efa8, 0 0 20px #7000efa8, 0 0 20px #7000efa8, 0 0 2px #fed128, 2px 2px 2px #806914;
+      color: #fffceb;
+  }
+  50% {
+      text-shadow: 0 0 2px #0da9ae, 0 0 5px #0da9ae, 0 0 5px #0da9ae, 0 0 5px #0da9ae, 0 0 2px #0da9ae, 4px 4px 2px #40340a;
+      color: #f1c7e3;
   }
 }

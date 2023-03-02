@@ -7,6 +7,8 @@ import Link from "next/link";
 import SindryIcon from "../components/SindryIcon";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import sindryLogo from '../../public/sindry-dos.svg'
+import Image from "next/image";
 
 type userProps = {
   email: string;
@@ -17,17 +19,17 @@ const Index: NextPage = () => {
   const { data: sessionData, status } = useSession();
   const router = useRouter();
 
-  useEffect(() => {
-    if (status !== "authenticated") return;
-    const role = sessionData.user?.role;
-    if (role === "admin") {
-      router.push("/app/admin/beranda");
-    } else if (role === "owner") {
-      router.push("/app/owner/beranda");
-    } else if (role === "cashier") {
-      router.push("/app/cashier/beranda");
-    }
-  }, [status]);
+  // useEffect(() => {
+  //   if (status !== "authenticated") return;
+  //   const role = sessionData.user?.role;
+  //   if (role === "admin") {
+  //     router.push("/app/admin/beranda");
+  //   } else if (role === "owner") {
+  //     router.push("/app/owner/beranda");
+  //   } else if (role === "cashier") {
+  //     router.push("/app/cashier/beranda");
+  //   }
+  // }, [status]);
   // const {accessToken}  = sessionData
   // const data2 = trpc.auth.getSecretMessage.useQuery();
   // console.log(data2.isError);
@@ -108,7 +110,7 @@ const Index: NextPage = () => {
                   </span>
                 )}
               </div>
-              <button className="btn-primary rounded-md text-base">
+              <button className="btn-primary justify-center rounded-md text-base">
                 Log In
               </button>
             </form>
@@ -123,7 +125,11 @@ const Index: NextPage = () => {
             </p>
           </div>
         </div>
-        <div className="bg-gray-800">2</div>
+        <div className="bg-gray-800 bg-pattern flex items-center justify-center relative overflow-hidden">
+          <div className="w-80 h-80 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 opacity-80 absolute blur-3xl animate-[pulse_4s_ease-out_infinite]"></div>
+          <Image alt="Sindry Logo" src={sindryLogo} width={120} height={120} className="animate-[bounce_5s_ease-out_infinite]" />
+          <h5 className="absolute bottom-3 right-3 text-sm font-bold raleway text-white neon">Sistem Pengelolaan Laundry</h5>
+        </div>
       </div>
     </>
   );
