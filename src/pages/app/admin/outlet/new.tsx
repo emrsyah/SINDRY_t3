@@ -30,7 +30,7 @@ const OutletNew: NextPageWithLayout = () => {
     formState: { errors },
   } = useForm<Outlet>();
 
-  const createMutation = trpc.outlet.create.useMutation({
+  const createOutlet = trpc.outlet.create.useMutation({
     onSuccess: () => {
       toast.success("Berhasil Menambahkan Data", { autoClose: 1000 });
       router.push(`/app/admin/outlet`)
@@ -41,7 +41,7 @@ const OutletNew: NextPageWithLayout = () => {
   });
 
   const submitHandler = handleSubmit((data) => {
-    createMutation.mutate({
+    createOutlet.mutate({
       name: data.name,
       contact: data.contact,
       address: data.address,

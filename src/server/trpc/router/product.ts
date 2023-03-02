@@ -26,17 +26,19 @@ export const productOuter = router({
     .input(
       z.object({
         name: z.string(),
-        address: z.string(),
-        contact: z.string(),
+        price: z.number(),
+        type: z.enum(["kiloan", "selimut", "kaos", "bed_cover", "lainnya"]),
+        outlet_id: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.outlets.create({
+      return ctx.prisma.products.create({
         data: {
           name: input.name,
-          address: input.address,
-          contact: input.contact,
-          total_sales: 0,
+          price: input.price,
+          type: input.type,
+          outlet_id: input.outlet_id,
+          sold: 0
         },
       });
     }),
