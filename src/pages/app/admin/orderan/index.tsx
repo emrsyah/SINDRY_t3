@@ -85,14 +85,14 @@ const Index: NextPageWithLayout = () => {
   return (
     <div>
       <div className="flex w-full items-center justify-between gap-1">
-        <h3 className="text-lg font-extrabold text-indigo-800">
+        <h3 className="text-lg raleway font-extrabold text-indigo-800">
           Atur Orderan{" "}
           <span className="text-base font-medium text-gray-500">
             ({data?.length})
           </span>
         </h3>
         <Link
-          href={"orderan/new"}
+          href={"orderan/select-outlet"}
           className="btn-primary rounded px-3 font-semibold"
         >
           <UilPlus size="20" /> Tambah Orderan

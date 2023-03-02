@@ -10,15 +10,12 @@ import type { Outlet, ProductType, Product } from "../../../../dataStructure";
 import { productTypeOptions } from "../../../../dataStructure";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
-import { UilEditAlt, UilEllipsisV } from "@iconscout/react-unicons";
+import { UilEditAlt } from "@iconscout/react-unicons";
 import DeleteConfirmationModal from "../../../../components/DeleteConfirmationModal";
 import BreadCrumbs from "../../../../components/BreadCrumbs";
-import Select from "react-select";
 import rupiahConverter from "../../../../helpers/rupiahConverter";
 import transactionStatusConverter from "../../../../helpers/transactionStatusConverter";
 import PaidStatus from "../../../../components/PaidStatus";
-import ProductType from "../../../../components/ProductTypeStatus";
-import ProductType from "../../../../components/ProductTypeStatus";
 import ProductTypeStatus from "../../../../components/ProductTypeStatus";
 import Link from "next/link";
 import TransactionMoreButton from "../../../../components/TransactionMoreButton";
@@ -31,7 +28,7 @@ interface OutletSelectFriendly extends Outlet {
 const OrderanDetail: NextPageWithLayout = () => {
   const router = useRouter();
   const { oid } = router.query;
-  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const breadItems = [
     {
       name: "Orderan",
@@ -51,7 +48,9 @@ const OrderanDetail: NextPageWithLayout = () => {
   } = useForm<Product>();
 
   const getChangePath = (newPath: string, newId: string) => {
-    return router.asPath.replace("orderan", newPath).replace(oid, newId);
+    return router.asPath
+      .replace("orderan", newPath)
+      .replace(oid as string, newId);
   };
 
   const [selectedType, setSelectedType] = useState<ProductType>();
@@ -108,30 +107,6 @@ const OrderanDetail: NextPageWithLayout = () => {
     setSelectedOutlet(localSelectedOutlet);
   }, [selectedType, outlets]);
 
-  const updateProduct = trpc.product.update.useMutation({
-    onSuccess: () => {
-      toast.success("Berhasil Menyimpan Data", { autoClose: 1000 });
-    },
-    onError: () => {
-      toast.error("Gagal Menyimpan Data", { autoClose: 1000 });
-    },
-  });
-
-  const submitHandler = handleSubmit((data) => {
-    updateProduct.mutate({
-      id: parseInt(oid as string),
-      name: data.name,
-      outlet_id: selectedOutlet?.value as number,
-      price: data.price,
-      type: selectedType?.value as
-        | "kiloan"
-        | "selimut"
-        | "kaos"
-        | "bed_cover"
-        | "lainnya",
-    });
-  });
-
   return (
     <>
       <DeleteConfirmationModal
@@ -146,7 +121,7 @@ const OrderanDetail: NextPageWithLayout = () => {
       ) : (
         <div>
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold">Detail Produk</h3>
+            <h3 className="text-xl font-bold">Detail Orderan</h3>
             <div className="flex items-center gap-2">
               <button className="btn-primary gap-2 rounded px-3">
                 Edit Pesanan <UilEditAlt size="20" />
@@ -182,7 +157,7 @@ const OrderanDetail: NextPageWithLayout = () => {
                   }`}
                 >
                   {transactionStatusConverter(
-                    transactions!.status as
+                    transactions?.status as
                       | "new"
                       | "on_process"
                       | "finished"
@@ -192,7 +167,7 @@ const OrderanDetail: NextPageWithLayout = () => {
               </div>
             </div>
             <div className="grid grid-cols-[1fr_40%] gap-3">
-              <div className="flex flex-col gap-3 rounded-md py-3 px-5 text-sm shadow">
+              <div className="container">
                 <h3 className="raleway mb-1 text-base font-bold">
                   Detail Pesanan
                 </h3>
@@ -250,8 +225,8 @@ const OrderanDetail: NextPageWithLayout = () => {
                     <p className="text-gray-600">Nama</p>
                     <Link
                       href={getChangePath(
-                        transactions?.outlet_id.toString() as string,
-                        "pelanggan"
+                        "pelanggan",
+                        transactions?.customer_id.toString() as string
                       )}
                       className="link font-medium"
                     >
@@ -283,8 +258,8 @@ const OrderanDetail: NextPageWithLayout = () => {
                     <p className="text-gray-600">Nama</p>
                     <Link
                       href={getChangePath(
-                        transactions?.outlet_id.toString() as string,
-                        "user"
+                        "user",
+                        transactions?.outlet_id.toString() as string
                       )}
                       className="link font-medium"
                     >
@@ -294,7 +269,7 @@ const OrderanDetail: NextPageWithLayout = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-3 rounded-md py-3 px-5 text-sm shadow">
+            <div className="container">
               <h3 className="raleway mb-1 text-base font-bold">
                 Ringkasan Pesanan
               </h3>
