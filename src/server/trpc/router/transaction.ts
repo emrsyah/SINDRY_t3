@@ -1,11 +1,25 @@
 import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 
-export const productRouter = router({
+export const transactionRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.products.findMany({
+    return ctx.prisma.transactions.findMany({
       include: {
-        outlets: true,
+        outlets: {
+          select: {
+            name: true,
+          },
+        },
+        customers: {
+          select: {
+            name: true,
+          },
+        },
+        user: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
   }),
@@ -38,7 +52,7 @@ export const productRouter = router({
           price: input.price,
           type: input.type,
           outlet_id: input.outlet_id,
-          sold: 0
+          sold: 0,
         },
       });
     }),
