@@ -72,7 +72,7 @@
     @apply input bg-gray-100 text-gray-400
   }
   .type-base{
-    @apply py-1 px-2 rounded text-sm font-semibold
+    @apply py-1 px-2 rounded text-sm font-semibold w-fit
   }
   .klType{
     @apply type-base text-indigo-500 bg-indigo-100

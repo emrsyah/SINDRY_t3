@@ -30,9 +30,39 @@ export const transactionRouter = router({
       })
     )
     .query(({ ctx, input }) => {
-      return ctx.prisma.products.findUnique({
+      return ctx.prisma.transactions.findUnique({
         where: {
           id: input.id,
+        },
+        include: {
+          outlets: {
+            select: {
+              name: true,
+            },
+          },
+          customers: {
+            select: {
+              name: true,
+              address: true,
+              contact: true,
+            },
+          },
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+          transaction_details : {
+            include : {
+                products : {
+                    select : {
+                        price: true,
+                        name: true
+                    }
+                }
+            }
+          }
         },
       });
     }),
