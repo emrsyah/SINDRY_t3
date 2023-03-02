@@ -72,7 +72,7 @@ const SidebarAdmin = () => {
   };
 
   return (
-    <nav className="flex h-full flex-col gap-4 border-r-[1.3px] bg-gray-50 p-6 pt-7">
+    <nav className="flex h-screen flex-col sticky top-0 gap-4 border-r-[1.3px] bg-gray-50 p-6 pt-7">
       <div className="flex items-center gap-3">
         <Image
           src={
