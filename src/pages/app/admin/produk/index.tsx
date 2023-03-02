@@ -83,13 +83,13 @@ const Index: NextPageWithLayout = () => {
     <div>
       <div className="flex w-full items-center justify-between gap-1">
         <h3 className="text-lg font-extrabold text-indigo-800">
-          Atur Pelanggan{" "}
+          Atur Produk{" "}
           <span className="text-base font-medium text-gray-500">
             ({data?.length})
           </span>
         </h3>
-        <Link href={'pelanggan/new'} className="btn-primary rounded px-3 font-semibold">
-          <UilPlus size="20" /> Tambah Pelanggan
+        <Link href={'produk/new'} className="btn-primary rounded px-3 font-semibold">
+          <UilPlus size="20" /> Tambah Produk
         </Link>
       </div>
       <div className="my-3">

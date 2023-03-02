@@ -16,7 +16,7 @@ export const productOuter = router({
       })
     )
     .query(({ ctx, input }) => {
-      return ctx.prisma.outlets.findUnique({
+      return ctx.prisma.products.findUnique({
         where: {
           id: input.id,
         },
@@ -45,19 +45,21 @@ export const productOuter = router({
       z.object({
         id: z.number(),
         name: z.string(),
-        address: z.string(),
-        contact: z.string(),
+        price: z.number(),
+        type: z.enum(["kiloan", "selimut", "kaos", "bed_cover", "lainnya"]),
+        outlet_id: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.outlets.update({
+      return ctx.prisma.products.update({
         where: {
           id: input.id,
         },
         data: {
           name: input.name,
-          address: input.address,
-          contact: input.contact,
+          price: input.price,
+          type: input.type,
+          outlet_id: input.outlet_id,
         },
       });
     }),
