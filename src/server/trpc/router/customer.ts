@@ -28,15 +28,18 @@ export const customerRouter = router({
         name: z.string(),
         address: z.string(),
         contact: z.string(),
+        gender: z.enum(["L", "P"]),
+        outlet_id: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.outlets.create({
+      return ctx.prisma.customers.create({
         data: {
           name: input.name,
           address: input.address,
           contact: input.contact,
-          total_sales: 0,
+          gender: input.gender,
+          outlet_id: input.outlet_id,
         },
       });
     }),

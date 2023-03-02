@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import LayoutAdmin from "../../../../components/LayoutAdmin";
-import { ReactElement, useEffect } from "react";
+import { ReactElement } from "react";
 import { NextPageWithLayout } from "../../../_app";
 import { trpc } from "../../../../utils/trpc";
 import { useForm } from "react-hook-form";
@@ -13,8 +13,6 @@ import {
 } from "../../../../dataStructure";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
-import { UilTrashAlt } from "@iconscout/react-unicons";
-import DeleteConfirmationModal from "../../../../components/DeleteConfirmationModal";
 import BreadCrumbs from "../../../../components/BreadCrumbs";
 import Select from "react-select";
 
@@ -23,9 +21,8 @@ interface OutletSelectFriendly extends Outlet {
   label: string;
 }
 
-const PelangganDetail: NextPageWithLayout = () => {
+const PelangganNew: NextPageWithLayout = () => {
   const router = useRouter();
-  const { pid } = router.query;
 
   const breadItems = [
     {
@@ -33,44 +30,20 @@ const PelangganDetail: NextPageWithLayout = () => {
       path: `/app/admin/pelanggan`,
     },
     {
-      name: "Detail Pelanggan",
-      path: `/app/admin/pelanggan/${pid}`,
+      name: "Tambah Pelanggan",
+      path: `/app/admin/pelanggan/new`,
     },
   ];
 
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<Customer>();
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedGender, setSelectedGender] = useState<Gender>();
   const [selectedOutlet, setSelectedOutlet] = useState<OutletSelectFriendly>();
   const [outlets, setOutlets] = useState<OutletSelectFriendly[]>([]);
-
-  const { data, isLoading, isError } = trpc.customer.getById.useQuery(
-    {
-      id: parseInt(pid as string),
-    },
-    {
-      onSuccess: (data) => {
-        setValue("name", data?.name as string);
-        setValue("address", data?.address as string);
-        setValue("contact", data?.contact as string);
-        const localSelectedGender = genderOptions.find(
-          (d) => d.value === data?.gender
-        );
-        setSelectedGender(localSelectedGender as Gender);
-      },
-      onError: (err) => {
-        toast.error("Terjadi Kesalahan");
-        console.error(err);
-        router.back();
-      },
-    }
-  );
 
   const {
     data: outletsD,
@@ -89,26 +62,18 @@ const PelangganDetail: NextPageWithLayout = () => {
     },
   });
 
-  useEffect(() => {
-    if (isLoading || loadingOutlets) return;
-    const localSelectedOutlet = outlets.find(
-      (d) => d.id === data?.outlet_id
-    );
-    setSelectedOutlet(localSelectedOutlet)
-  }, [selectedGender, outlets]);
-
-  const updateCustomer = trpc.customer.update.useMutation({
+  const createCustomer = trpc.customer.create.useMutation({
     onSuccess: () => {
-      toast.success("Berhasil Menyimpan Data", { autoClose: 1000 });
+      toast.success("Berhasil Menambahkan Data", { autoClose: 1000 });
+      router.back();
     },
     onError: () => {
-      toast.error("Gagal Menyimpan Data", { autoClose: 1000 });
+      toast.error("Gagal Menambahkan Data", { autoClose: 1000 });
     },
   });
 
   const submitHandler = handleSubmit((data) => {
-    updateCustomer.mutate({
-      id: parseInt(pid as string),
+    createCustomer.mutate({
       name: data.name,
       contact: data.contact,
       address: data.address,
@@ -119,28 +84,14 @@ const PelangganDetail: NextPageWithLayout = () => {
 
   return (
     <>
-      <DeleteConfirmationModal
-        isOpen={isOpen}
-        type="pelanggan"
-        setIsOpen={setIsOpen}
-        id={parseInt(pid as string)}
-      />
       <BreadCrumbs items={breadItems} />
       <form onSubmit={submitHandler}>
         <div className="flex items-center justify-between">
           <div>
-          <h3 className="text-xl font-bold">Detail Pelanggan</h3>
-          <p className="text-sm font-medium text-indigo-500">Ditambahkan pada {dayjs(data?.created_at).format("DD MMM")}</p>
+            <h3 className="text-xl font-bold">Detail Pelanggan</h3>
           </div>
           <div className="flex items-center gap-2">
             <button className="btn-primary rounded">Simpan Data</button>
-            <button
-              type="button"
-              onClick={() => setIsOpen(true)}
-              className="btn-secondary rounded p-2 hover:border-red-500 hover:bg-red-50 hover:text-red-500"
-            >
-              <UilTrashAlt size="20" />
-            </button>
           </div>
         </div>
         <div className="my-6 flex flex-col gap-3">
@@ -149,7 +100,6 @@ const PelangganDetail: NextPageWithLayout = () => {
             <input
               type="text"
               placeholder="Nama Outlet"
-              defaultValue={data?.name}
               {...register("name", { required: true })}
               className={`input ${errors.name ? "!border-red-500" : null} `}
             />
@@ -165,7 +115,6 @@ const PelangganDetail: NextPageWithLayout = () => {
               <input
                 type="text"
                 placeholder="Alamat"
-                defaultValue={data?.address}
                 {...register("address", { required: true })}
                 className={`input ${
                   errors.address ? "!border-red-500" : null
@@ -182,7 +131,6 @@ const PelangganDetail: NextPageWithLayout = () => {
               <input
                 type="text"
                 placeholder="Kontak"
-                defaultValue={data?.contact}
                 {...register("contact", { required: true })}
                 className={`input ${
                   errors.contact ? "!border-red-500" : null
@@ -236,8 +184,8 @@ const PelangganDetail: NextPageWithLayout = () => {
     </>
   );
 };
-export default PelangganDetail;
+export default PelangganNew;
 
-PelangganDetail.getLayout = function getLayout(page: ReactElement) {
+PelangganNew.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAdmin>{page}</LayoutAdmin>;
 };

@@ -61,7 +61,7 @@ const Index: NextPageWithLayout = () => {
             ({data?.length})
           </span>
         </h3>
-        <Link href={'outlet/new'} className="btn-primary rounded px-3 font-semibold">
+        <Link href={'pelanggan/new'} className="btn-primary rounded px-3 font-semibold">
           <UilPlus size="20" /> Tambah Pelanggan
         </Link>
       </div>
