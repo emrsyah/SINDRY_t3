@@ -1,3 +1,4 @@
+import { Customer } from './dataStructure';
 export type Outlet  = {
   id: number;
   name: string;
@@ -53,10 +54,7 @@ export interface Transaction {
   cashier_name: string;
 }
 
-export interface TransactionWithCustomer extends Transaction {
-  customer_name: string;
-  customer_address: string;
-  customer_contact: string;
+export interface TransactionWithCustomer extends Transaction, Customer {
 }
 
 export type TransactionListType = Transaction[];

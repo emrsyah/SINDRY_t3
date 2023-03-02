@@ -4,11 +4,24 @@ import { router, protectedProcedure } from "../trpc";
 export const customerRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.prisma.customers.findMany({
-        include : {
-            outlets: true
-        }
+      include: {
+        outlets: true,
+      },
     });
   }),
+  getByOutlet: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.customers.findMany({
+        where: {
+          outlet_id: input.id
+        }
+      });
+    }),
   getById: protectedProcedure
     .input(
       z.object({
@@ -64,7 +77,7 @@ export const customerRouter = router({
           address: input.address,
           contact: input.contact,
           gender: input.gender,
-          outlet_id: input.outlet_id
+          outlet_id: input.outlet_id,
         },
       });
     }),
