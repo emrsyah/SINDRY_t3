@@ -98,7 +98,7 @@ const SidebarAdmin = () => {
         {sidebarItems.map((item, i) => (
           <Link
             href={item.path}
-            className={`flex items-center gap-3 rounded p-2 font-medium text-gray-500 hover:bg-gray-100 ${
+            className={`flex items-center gap-3 text-sm rounded p-2 font-medium text-gray-500 hover:bg-gray-100 ${
               extractLocation() === item.name
                 ? "bg-purple-100 hover:bg-purple-100 !text-indigo-600"
                 : ""
@@ -120,7 +120,7 @@ const SidebarAdmin = () => {
         {sidebarItemsAdmin.map((item, i) => (
           <Link
             href={item.path}
-            className={`flex items-center gap-3 rounded p-2 font-medium text-gray-500 hover:bg-gray-100 ${
+            className={`flex items-center text-sm gap-3 rounded p-2 font-medium text-gray-500 hover:bg-gray-100 ${
               extractLocation() === item.name
                 ? "bg-purple-100 hover:bg-purple-100 !text-indigo-600"
                 : ""

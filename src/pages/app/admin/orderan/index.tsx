@@ -10,6 +10,8 @@ import EmptyTable from "../../../../components/EmptyTable";
 import Link from "next/link";
 import rupiahConverter from "../../../../helpers/rupiahConverter";
 import transactionStatusConverter from "../../../../helpers/transactionStatusConverter";
+import PaidStatus from "../../../../components/PaidStatus";
+import ProductType from "../../../../components/ProductTypeStatus";
 
 const Index: NextPageWithLayout = () => {
   const [filterInput, setFilterInput] = useState<string>("");
@@ -45,21 +47,7 @@ const Index: NextPageWithLayout = () => {
         Header: "Status",
         accessor: "status",
         Cell: ({ cell: { value } }: { cell: { value: "on_process" | "finished" | "picked_up" | "new" } }) => (
-          <span
-            className={`${
-              value === "new"
-                ? "lType"
-                : value === "on_process"
-                ? "kType"
-                : value === "finished"
-                ? "sType"
-                : value === "picked_up"
-                ? "bcType"
-                : ""
-            }`}
-          >
-            {transactionStatusConverter(value)}
-          </span>
+          <ProductType status={value} />
         ),
       },
       {
@@ -72,20 +60,8 @@ const Index: NextPageWithLayout = () => {
       {
         Header: "Bayar",
         accessor: "is_paid",
-        Cell: ({ cell: { value } }: { cell: { value: number } }) => (
-          <>
-            {value ? (
-              <span className="flex p-1 text-green-500 w-fit px-2 bg-green-100 rounded text-xs font-semibold items-center gap-1">
-                <UilCheckCircle size="18" />
-                <p>Dibayar {value}</p>
-              </span>
-            ) : (
-              <span className="flex p-1 text-red-500 w-fit px-2 bg-red-100 rounded text-xs font-semibold items-center gap-1">
-                <UilTimesCircle size="18" />
-                <p>Belum {value}</p>
-              </span>
-            )}
-          </>
+        Cell: ({ cell: { value } }: { cell: { value: boolean } }) => (
+          <PaidStatus is_paid={value} />
         ),
       },
       {
