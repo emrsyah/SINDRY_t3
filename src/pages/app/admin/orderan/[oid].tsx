@@ -20,6 +20,8 @@ import PaidStatus from "../../../../components/PaidStatus";
 import ProductType from "../../../../components/ProductTypeStatus";
 import ProductType from "../../../../components/ProductTypeStatus";
 import ProductTypeStatus from "../../../../components/ProductTypeStatus";
+import Link from "next/link";
+import TransactionMoreButton from "../../../../components/TransactionMoreButton";
 
 interface OutletSelectFriendly extends Outlet {
   value: number;
@@ -29,15 +31,15 @@ interface OutletSelectFriendly extends Outlet {
 const OrderanDetail: NextPageWithLayout = () => {
   const router = useRouter();
   const { oid } = router.query;
-
+  const [isOpen, setIsOpen] = useState<boolean>(false)
   const breadItems = [
     {
-      name: "Pelanggan",
-      path: `/app/admin/pelanggan`,
+      name: "Orderan",
+      path: `/app/admin/orderan`,
     },
     {
-      name: "Detail Pelanggan",
-      path: `/app/admin/pelanggan/${oid}`,
+      name: "Detail Orderan",
+      path: `/app/admin/orderan/${oid}`,
     },
   ];
 
@@ -48,7 +50,10 @@ const OrderanDetail: NextPageWithLayout = () => {
     formState: { errors },
   } = useForm<Product>();
 
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const getChangePath = (newPath: string, newId: string) => {
+    return router.asPath.replace("orderan", newPath).replace(oid, newId);
+  };
+
   const [selectedType, setSelectedType] = useState<ProductType>();
   const [selectedOutlet, setSelectedOutlet] = useState<OutletSelectFriendly>();
   const [outlets, setOutlets] = useState<OutletSelectFriendly[]>([]);
@@ -131,7 +136,7 @@ const OrderanDetail: NextPageWithLayout = () => {
     <>
       <DeleteConfirmationModal
         isOpen={isOpen}
-        type="produk"
+        type="orderan"
         setIsOpen={setIsOpen}
         id={parseInt(oid as string)}
       />
@@ -146,9 +151,7 @@ const OrderanDetail: NextPageWithLayout = () => {
               <button className="btn-primary gap-2 rounded px-3">
                 Edit Pesanan <UilEditAlt size="20" />
               </button>
-              <button className="btn-secondary gap-2 rounded p-2">
-                <UilEllipsisV size="20" />
-              </button>
+              <TransactionMoreButton setIsOpen={setIsOpen} />
             </div>
           </div>
           <div className="my-6 flex flex-col gap-3">
@@ -226,7 +229,15 @@ const OrderanDetail: NextPageWithLayout = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-gray-600">Outlet</p>
-                  <h5 className="font-medium link">{transactions?.outlets.name}</h5>
+                  <Link
+                    href={getChangePath(
+                      transactions?.outlet_id.toString() as string,
+                      "outlet"
+                    )}
+                    className="link font-medium"
+                  >
+                    {transactions?.outlets.name}
+                  </Link>
                 </div>
               </div>
 
@@ -237,9 +248,15 @@ const OrderanDetail: NextPageWithLayout = () => {
                   </h3>
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">Nama</p>
-                    <h5 className="font-medium link">
+                    <Link
+                      href={getChangePath(
+                        transactions?.outlet_id.toString() as string,
+                        "pelanggan"
+                      )}
+                      className="link font-medium"
+                    >
                       {transactions?.customers.name}
-                    </h5>
+                    </Link>
                   </div>
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">Alamat</p>
@@ -264,7 +281,15 @@ const OrderanDetail: NextPageWithLayout = () => {
                   </h3>
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">Nama</p>
-                    <h5 className="font-medium link">{transactions?.user.name}</h5>
+                    <Link
+                      href={getChangePath(
+                        transactions?.outlet_id.toString() as string,
+                        "user"
+                      )}
+                      className="link font-medium"
+                    >
+                      {transactions?.user.name}
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -293,24 +318,34 @@ const OrderanDetail: NextPageWithLayout = () => {
               ))}
               <div className="my-1 h-[0.8px] w-full bg-gray-300"></div>
               <div className="flex items-center justify-between">
-                <p className="text-gray-600 font-medium">Sub-Total</p>
-                <h5 className="font-medium">{rupiahConverter(transactions?.sub_total as number)}</h5>
+                <p className="font-medium text-gray-600">Sub-Total</p>
+                <h5 className="font-medium">
+                  {rupiahConverter(transactions?.sub_total as number)}
+                </h5>
               </div>
               <div className="flex items-center justify-between">
-                <p className="text-gray-600 font-medium">Diskon</p>
-                <h5 className="font-medium">{(transactions?.discount as number)}%</h5>
+                <p className="font-medium text-gray-600">Diskon</p>
+                <h5 className="font-medium">
+                  {transactions?.discount as number}%
+                </h5>
               </div>
               <div className="flex items-center justify-between">
-                <p className="text-gray-600 font-medium">Pajak</p>
-                <h5 className="font-medium">{(transactions?.taxes as number)}%</h5>
+                <p className="font-medium text-gray-600">Pajak</p>
+                <h5 className="font-medium">
+                  {transactions?.taxes as number}%
+                </h5>
               </div>
               <div className="flex items-center justify-between">
-                <p className="text-gray-600 font-medium">Biaya Tambahan</p>
-                <h5 className="font-medium">{rupiahConverter(transactions?.additional_cost as number)}</h5>
+                <p className="font-medium text-gray-600">Biaya Tambahan</p>
+                <h5 className="font-medium">
+                  {rupiahConverter(transactions?.additional_cost as number)}
+                </h5>
               </div>
               <div className="flex items-center justify-between">
                 <p className=" text-lg font-semibold">Total Akhir</p>
-                <h5 className="font-bold text-lg text-indigo-500">{rupiahConverter(transactions?.total as number)}</h5>
+                <h5 className="text-lg font-bold text-indigo-500">
+                  {rupiahConverter(transactions?.total as number)}
+                </h5>
               </div>
             </div>
           </div>

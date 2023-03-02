@@ -116,7 +116,7 @@ export const transactionRouter = router({
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.products.delete({
+      return ctx.prisma.transactions.delete({
         where: {
           id: input.id,
         },

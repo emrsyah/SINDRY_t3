@@ -116,7 +116,7 @@ model transaction_details {
   product_id     Int
   quantity       Int
   description    String       @db.VarChar(100)
-  transactions   transactions @relation(fields: [transaction_id], references: [id], onUpdate: Restrict, map: "transaction_details_ibfk_1")
+  transactions   transactions @relation(fields: [transaction_id], references: [id], onUpdate: Restrict, map: "transaction_details_ibfk_1", onDelete: Cascade)
   products       products     @relation(fields: [product_id], references: [id], onUpdate: Restrict, map: "transaction_details_ibfk_2")
 
   @@index([product_id], map: "product_id")
