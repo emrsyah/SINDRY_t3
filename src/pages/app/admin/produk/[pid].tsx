@@ -119,7 +119,7 @@ const ProdukDetail: NextPageWithLayout = () => {
     <>
       <DeleteConfirmationModal
         isOpen={isOpen}
-        type="pelanggan"
+        type="produk"
         setIsOpen={setIsOpen}
         id={parseInt(pid as string)}
       />

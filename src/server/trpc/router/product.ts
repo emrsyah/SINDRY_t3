@@ -70,7 +70,7 @@ export const productOuter = router({
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.outlets.delete({
+      return ctx.prisma.products.delete({
         where: {
           id: input.id,
         },
