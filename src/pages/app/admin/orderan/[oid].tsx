@@ -10,7 +10,7 @@ import type { Outlet, ProductType, Product } from "../../../../dataStructure";
 import { productTypeOptions } from "../../../../dataStructure";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
-import { UilEditAlt, UilPrint } from "@iconscout/react-unicons";
+import { UilEditAlt, UilEllipsisV } from "@iconscout/react-unicons";
 import DeleteConfirmationModal from "../../../../components/DeleteConfirmationModal";
 import BreadCrumbs from "../../../../components/BreadCrumbs";
 import Select from "react-select";
@@ -146,8 +146,8 @@ const OrderanDetail: NextPageWithLayout = () => {
               <button className="btn-primary gap-2 rounded px-3">
                 Edit Pesanan <UilEditAlt size="20" />
               </button>
-              <button className="btn-secondary gap-2 rounded px-3">
-                Cetak Struk <UilPrint size="20" />
+              <button className="btn-secondary gap-2 rounded p-2">
+                <UilEllipsisV size="20" />
               </button>
             </div>
           </div>
@@ -226,7 +226,7 @@ const OrderanDetail: NextPageWithLayout = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <p className="text-gray-600">Outlet</p>
-                  <h5 className="font-medium">{transactions?.outlets.name}</h5>
+                  <h5 className="font-medium link">{transactions?.outlets.name}</h5>
                 </div>
               </div>
 
@@ -237,7 +237,7 @@ const OrderanDetail: NextPageWithLayout = () => {
                   </h3>
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">Nama</p>
-                    <h5 className="font-medium">
+                    <h5 className="font-medium link">
                       {transactions?.customers.name}
                     </h5>
                   </div>
@@ -264,7 +264,7 @@ const OrderanDetail: NextPageWithLayout = () => {
                   </h3>
                   <div className="flex items-center justify-between">
                     <p className="text-gray-600">Nama</p>
-                    <h5 className="font-medium">{transactions?.user.name}</h5>
+                    <h5 className="font-medium link">{transactions?.user.name}</h5>
                   </div>
                 </div>
               </div>
