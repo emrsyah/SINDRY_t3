@@ -18,6 +18,11 @@ import DeleteConfirmationModal from "../../../../components/DeleteConfirmationMo
 import BreadCrumbs from "../../../../components/BreadCrumbs";
 import Select from "react-select";
 
+interface OutletSelectFriendly extends Outlet {
+  value: number;
+  label: string;
+}
+
 const PelangganDetail: NextPageWithLayout = () => {
   const router = useRouter();
   const { pid } = router.query;
@@ -41,9 +46,9 @@ const PelangganDetail: NextPageWithLayout = () => {
   } = useForm<Customer>();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selectedGender, setSelectedGender] = useState<Gender>({});
-  const [selectedOutlet, setSelectedOutlet] = useState<Outlet>({});
-  const [outlets, setOutlets] = useState<Outlet[]>([]);
+  const [selectedGender, setSelectedGender] = useState<Gender>();
+  const [selectedOutlet, setSelectedOutlet] = useState<OutletSelectFriendly>();
+  const [outlets, setOutlets] = useState<OutletSelectFriendly[]>([]);
 
   const { data, isLoading, isError } = trpc.customer.getById.useQuery(
     {
@@ -57,8 +62,7 @@ const PelangganDetail: NextPageWithLayout = () => {
         const localSelectedGender = genderOptions.find(
           (d) => d.value === data?.gender
         );
-        console.log(data)
-        setSelectedGender(localSelectedGender);
+        setSelectedGender(localSelectedGender as Gender);
       },
       onError: (err) => {
         toast.error("Terjadi Kesalahan");
@@ -81,12 +85,7 @@ const PelangganDetail: NextPageWithLayout = () => {
           label: d.name,
         };
       });
-      // const localSelectedOutlet = dataSelectFriendly.find(
-      //   (d) => d.id === data?.outlet_id
-      // );
-      // setSelectedOutlet(localSelectedOutlet);
-      console.log(dataSelectFriendly)
-      setOutlets(dataSelectFriendly);
+      setOutlets(dataSelectFriendly as OutletSelectFriendly[]);
     },
   });
 
@@ -95,7 +94,6 @@ const PelangganDetail: NextPageWithLayout = () => {
     const localSelectedOutlet = outlets.find(
       (d) => d.id === data?.outlet_id
     );
-    console.log(localSelectedOutlet)
     setSelectedOutlet(localSelectedOutlet)
   }, [selectedGender, outlets]);
 
@@ -114,8 +112,8 @@ const PelangganDetail: NextPageWithLayout = () => {
       name: data.name,
       contact: data.contact,
       address: data.address,
-      gender: selectedGender.value,
-      outlet_id: selectedOutlet.value,
+      gender: selectedGender?.value as "L" | "P",
+      outlet_id: selectedOutlet?.value as number,
     });
   });
 
