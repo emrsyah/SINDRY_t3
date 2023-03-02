@@ -19,7 +19,7 @@ const Index: NextPage = () => {
 
   useEffect(() => {
     if (status !== "authenticated") return;
-    const role = sessionData.user.role;
+    const role = sessionData.user?.role;
     if (role === "admin") {
       router.push("/app/admin/beranda");
     } else if (role === "owner") {
@@ -52,15 +52,6 @@ const Index: NextPage = () => {
       console.log("berhasil");
     }
   });
-
-  if (sessionData) {
-    return (
-      <>
-        Signed in as {sessionData.user?.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </>
-    );
-  }
 
   return (
     <>

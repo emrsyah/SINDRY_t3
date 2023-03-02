@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import LayoutAdmin from "../../../../components/LayoutAdmin";
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import { NextPageWithLayout } from "../../../_app";
 import { trpc } from "../../../../utils/trpc";
 import { useForm } from "react-hook-form";
@@ -17,7 +17,6 @@ import { UilTrashAlt } from "@iconscout/react-unicons";
 import DeleteConfirmationModal from "../../../../components/DeleteConfirmationModal";
 import BreadCrumbs from "../../../../components/BreadCrumbs";
 import Select from "react-select";
-
 
 const PelangganDetail: NextPageWithLayout = () => {
   const router = useRouter();
@@ -55,8 +54,11 @@ const PelangganDetail: NextPageWithLayout = () => {
         setValue("name", data?.name as string);
         setValue("address", data?.address as string);
         setValue("contact", data?.contact as string);
-        const localSelectedGender = genderOptions.find(d => d.value === data?.gender)
-        setSelectedGender(localSelectedGender)
+        const localSelectedGender = genderOptions.find(
+          (d) => d.value === data?.gender
+        );
+        console.log(data)
+        setSelectedGender(localSelectedGender);
       },
       onError: (err) => {
         toast.error("Terjadi Kesalahan");
@@ -79,11 +81,23 @@ const PelangganDetail: NextPageWithLayout = () => {
           label: d.name,
         };
       });
-      const localSelectedOutlet = dataSelectFriendly.find(d => d.id === data?.outlet_id)
-      setSelectedOutlet(localSelectedOutlet)
+      // const localSelectedOutlet = dataSelectFriendly.find(
+      //   (d) => d.id === data?.outlet_id
+      // );
+      // setSelectedOutlet(localSelectedOutlet);
+      console.log(dataSelectFriendly)
       setOutlets(dataSelectFriendly);
     },
   });
+
+  useEffect(() => {
+    if (isLoading || loadingOutlets) return;
+    const localSelectedOutlet = outlets.find(
+      (d) => d.id === data?.outlet_id
+    );
+    console.log(localSelectedOutlet)
+    setSelectedOutlet(localSelectedOutlet)
+  }, [selectedGender, outlets]);
 
   const updateCustomer = trpc.customer.update.useMutation({
     onSuccess: () => {
