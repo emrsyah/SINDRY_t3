@@ -2,6 +2,7 @@ import { Menu } from "@headlessui/react";
 import React from "react";
 import { UilSignout } from "@iconscout/react-unicons";
 import Image from "next/image";
+import { signOut } from "next-auth/react";
 
 function SidebarProfile({
   email,
@@ -12,7 +13,7 @@ function SidebarProfile({
 }) {
   return (
     <Menu className="relative" as="div">
-      <Menu.Button className="flex p-2 rounded-md hover:bg-slate-100 w-full items-center gap-3">
+      <Menu.Button className="flex w-full items-center gap-3 rounded-md p-2 hover:bg-slate-100">
         <Image
           src={`https://avatars.dicebear.com/api/adventurer-neutral/${email}.svg`}
           alt="profile"
@@ -29,12 +30,16 @@ function SidebarProfile({
         <Menu.Item>
           {({ active }) => (
             <button
-              className={` flex gap-2 px-3 items-center py-[6px]  ${
+              className={` flex items-center gap-2 px-3 py-[6px]  ${
                 active && "bg-gray-100  text-sm text-red-500"
               }`}
-              // onClick={() => setIsOpen(true)}
+              onClick={() =>
+                signOut({
+                  callbackUrl: window.location.origin,
+                })
+              }
             >
-              <UilSignout  size="16" />
+              <UilSignout size="16" />
               <p className="font-medium">Log Out</p>
             </button>
           )}

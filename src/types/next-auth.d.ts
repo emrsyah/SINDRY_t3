@@ -8,6 +8,7 @@ export enum Role {
 
 interface IUser extends DefaultUser {
   role?: Role;
+  id: string
 }
 declare module "next-auth" {
   interface User extends IUser {}

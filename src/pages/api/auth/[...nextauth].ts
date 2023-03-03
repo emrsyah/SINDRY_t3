@@ -15,6 +15,7 @@ export const authOptions: NextAuthOptions = {
       /* Step 1: update the token based on the user object */
       if (user) {
         token.role = user.role;
+        token.id = user.id
       }
       return token;
     },
@@ -22,6 +23,7 @@ export const authOptions: NextAuthOptions = {
       /* Step 2: update the session.user based on the token object */
       if (token && session.user) {
         session.user.role = token.role;
+        session.user.id = token.id
       }
       return session;
     },
@@ -96,7 +98,7 @@ export const authOptions: NextAuthOptions = {
     // ...add more providers here
   ],
   jwt: {
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 24 * 60 * 60,
   },
   session: {
     strategy: "jwt",
