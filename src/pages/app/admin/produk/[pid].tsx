@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import type { NextPageWithLayout } from "../../../_app";
 import { trpc } from "../../../../utils/trpc";
 import { useForm } from "react-hook-form";
-import type { Outlet, ProductType, Product } from "../../../../dataStructure";
+import type { ProductType, Product, OutletSelectFriendly } from "../../../../dataStructure";
 import { productTypeOptions } from "../../../../dataStructure";
 import dayjs from "dayjs";
 import { toast } from "react-toastify";
@@ -14,11 +14,6 @@ import { UilTrashAlt } from "@iconscout/react-unicons";
 import DeleteConfirmationModal from "../../../../components/DeleteConfirmationModal";
 import BreadCrumbs from "../../../../components/BreadCrumbs";
 import Select from "react-select";
-
-interface OutletSelectFriendly extends Outlet {
-  value: number;
-  label: string;
-}
 
 const ProdukDetail: NextPageWithLayout = () => {
   const router = useRouter();

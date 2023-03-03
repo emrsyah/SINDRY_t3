@@ -2,7 +2,7 @@ import { Menu } from "@headlessui/react";
 import React from "react";
 import { UilEllipsisV, UilTrashAlt, UilPrint } from "@iconscout/react-unicons";
 
-function TransactionMoreButton({setIsOpen}) {
+function TransactionMoreButton({setIsOpen} : {setIsOpen: React.Dispatch<React.SetStateAction<boolean>>}) {
   return (
     <Menu className="relative" as="div">
       <Menu.Button className="btn-secondary gap-2 rounded p-2">

@@ -67,7 +67,7 @@ const Index: NextPageWithLayout = () => {
           placeholder="Cari Dengan Nama"
           onChange={handleFilterChange}
           value={filterInput}
-          className="input mt-4 mb-2 w-full border-gray-300 text-sm focus:border-indigo-500"
+          className="input mt-4 mb-1 w-full border-gray-300 text-sm focus:border-indigo-500"
         />
         {isLoading ? (
           <EmptyTable status="loading" columns={columns} />

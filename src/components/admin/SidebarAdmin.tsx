@@ -12,6 +12,7 @@ import {
 } from "@iconscout/react-unicons";
 import Link from "next/link";
 import { useRouter } from 'next/router';
+import SidebarProfile from "../SidebarProfile";
 
 const sidebarItems = [
   {
@@ -73,23 +74,7 @@ const SidebarAdmin = () => {
 
   return (
     <nav className="flex h-screen flex-col sticky top-0 gap-4 border-r-[1.3px] bg-gray-50 p-6 pt-7">
-      <div className="flex items-center gap-3">
-        <Image
-          src={
-            `https://avatars.dicebear.com/api/adventurer-neutral/${sessionData?.user?.email}.svg`
-          }
-          alt="profile"
-          width={36}
-          height={36}
-          className="rounded-full"
-        />
-        <div className="">
-          <h5 className="text-sm font-semibold">{sessionData?.user?.email}</h5>
-          <p className="text-xs font-medium text-gray-400">
-            {sessionData?.user?.role}
-          </p>
-        </div>
-      </div>
+    <SidebarProfile email={sessionData?.user?.email as string} role={sessionData?.user?.role as "admin" | "owner" | "cashier"} />
       <button className="btn-primary flex items-center justify-center gap-1 rounded-md">
         Buat Transaksi
         <UilPlus size="20" />

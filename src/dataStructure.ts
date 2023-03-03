@@ -28,7 +28,7 @@ export interface Product {
   name: string;
   price: number;
   created_at: Date;
-  outlet_name: string;
+  // outlet_name: string;
   sold: number,
 }
 
@@ -137,3 +137,38 @@ export const productTypeOptions: ProductType[] = [
     value: "lainnya"
   },
 ]
+
+export const paidStatusOptions = [
+  { value: 0, label: "Belum Dibayar" },
+  { value: 1, label: "Sudah Dibayar" },
+];
+
+export const transactionStatusOptions = [
+  { value: "new", label: "Baru" },
+  { value: "on_process", label: "Diproses" },
+  { value: "finished", label: "Selesai" },
+  { value: "picked_up", label: "Diambil" },
+];
+
+export interface SelectFriendlyString{
+  value: string;
+  label: string;
+}
+export interface SelectFriendlyNumber{
+  value: number;
+  label: string;
+}
+
+export interface OutletSelectFriendly extends Outlet, SelectFriendlyNumber{
+}
+
+export interface CustomerSelectFriendly extends Customer, SelectFriendlyNumber{
+}
+
+export interface ProductSelectFriendly extends Product, SelectFriendlyNumber{
+}
+
+export interface AddedProductProps extends ProductSelectFriendly{
+  quantity: number
+}
+

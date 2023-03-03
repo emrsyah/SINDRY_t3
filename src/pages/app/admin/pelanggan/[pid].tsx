@@ -9,7 +9,8 @@ import { useForm } from "react-hook-form";
 import type {
   Customer,
   Gender,
-  Outlet} from "../../../../dataStructure";
+  Outlet,
+  OutletSelectFriendly} from "../../../../dataStructure";
 import {
   genderOptions
 } from "../../../../dataStructure";
@@ -20,10 +21,6 @@ import DeleteConfirmationModal from "../../../../components/DeleteConfirmationMo
 import BreadCrumbs from "../../../../components/BreadCrumbs";
 import Select from "react-select";
 
-interface OutletSelectFriendly extends Outlet {
-  value: number;
-  label: string;
-}
 
 const PelangganDetail: NextPageWithLayout = () => {
   const router = useRouter();

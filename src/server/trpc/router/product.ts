@@ -22,6 +22,19 @@ export const productRouter = router({
         },
       });
     }),
+  getByOutlet: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.products.findMany({
+        where: {
+          outlet_id: input.id,
+        },
+      });
+    }),
   create: protectedProcedure
     .input(
       z.object({
@@ -38,7 +51,7 @@ export const productRouter = router({
           price: input.price,
           type: input.type,
           outlet_id: input.outlet_id,
-          sold: 0
+          sold: 0,
         },
       });
     }),
