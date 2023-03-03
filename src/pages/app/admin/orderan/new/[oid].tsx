@@ -23,8 +23,12 @@ import { trpc } from "../../../../../utils/trpc";
 import { useForm } from "react-hook-form";
 import rupiahConverter from "../../../../../helpers/rupiahConverter";
 import { UilMinus, UilPlus, UilTrashAlt } from "@iconscout/react-unicons";
+import { toast } from "react-toastify";
+import { useSession } from "next-auth/react";
+import { generateRandomId } from "../../../../../helpers/generateRandomId";
 
 const OrderanNew: NextPageWithLayout = () => {
+  const { data: session } = useSession();
   const router = useRouter();
   const { oid } = router.query;
   const breadItems = [
@@ -182,6 +186,81 @@ const OrderanNew: NextPageWithLayout = () => {
     return ((getSubTotal() - getDiscount()) * taxes) / 100;
   };
 
+  const createCustomer = trpc.customer.create.useMutation({
+    onSuccess: (data) => {
+      return data.id;
+    },
+    onError: () => {
+      toast.error("Gagal Menambahkan Data", { autoClose: 1000 });
+    },
+  });
+
+  const createTransaction = trpc.transaction.create.useMutation({
+    onSuccess: (data) => {
+      toast.success("Berhasil Menambahkan Data", { autoClose: 1000 });
+      router.push("/app/admin/orderan")
+    },
+    onError: () => {
+      toast.error("Gagal Menambahkan Data", { autoClose: 1000 });
+    },
+  });
+
+  const submitHandler = handleSubmit((data) => {
+    let customerId = selectedCustomer === undefined ? -1 : selectedCustomer.id;
+    const discount = parseInt(data.discount ? data.discount : "0");
+    const taxes = parseInt(data.taxes ? data.taxes : "0");
+    const subTotal = getSubTotal();
+    const additionalCost = parseInt(data.additional_cost ? data.additional_cost : "0");
+    const total =
+      subTotal -
+      getDiscount() +
+      getTaxes() +
+      parseInt(watchAdditional[2] ? watchAdditional[2] : 0);
+    const userId = session?.user?.id;
+    const randomId = generateRandomId(8);
+    const invoiceCode = `ID-${randomId}`;
+    const toAddedProducts = addedProductOptions.map((d) => {
+      return {
+        product_id: d.id,
+        quantity: d.quantity,
+        description: "",
+      };
+    });
+
+    // * Add Customer If Create New
+    if (selectedCustomer === undefined) {
+      createCustomer.mutate({
+        name: data.name,
+        address: data.address,
+        contact: data.contact,
+        gender: selectedGender.value,
+        outlet_id: parseInt(oid as string),
+      });
+      customerId = createCustomer.data?.id as number;
+    }
+
+
+    // Add Transaction and transaction details
+    createTransaction.mutate({
+      customer_id: customerId,
+      total: total,
+      sub_total: subTotal,
+      cashier_id: userId as string,
+      invoice_code: invoiceCode,
+      outlet_id: parseInt(oid as string),
+      additional_cost: additionalCost,
+      discount: discount,
+      taxes: taxes,
+      status: selectedTransactionStat?.value as
+        | "new"
+        | "on_process"
+        | "finished"
+        | "picked_up",
+      is_paid: selectedPaidStat?.value === 1 ? true : false,
+      transaction_details: toAddedProducts,
+    });
+  });
+
   return (
     <>
       <BreadCrumbs items={breadItems} />
@@ -189,7 +268,10 @@ const OrderanNew: NextPageWithLayout = () => {
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-bold">Orderan Baru</h3>
         </div>
-        <div className="my-3 grid grid-cols-[1fr_40%] gap-4">
+        <form
+          onSubmit={submitHandler}
+          className="my-3 grid grid-cols-[1fr_40%] gap-4"
+        >
           {/* Sisi Kiri */}
           <div className="flex flex-col gap-4">
             <div className="container pb-6">
@@ -376,7 +458,7 @@ const OrderanNew: NextPageWithLayout = () => {
                   placeholder="0%"
                   min={0}
                   max={100}
-                  {...register("discount", { required: true, min: 0, max: 0 })}
+                  {...register("discount", { required: false })}
                   className={`input ${
                     errors.discount ? "!border-red-500" : null
                   } `}
@@ -394,7 +476,7 @@ const OrderanNew: NextPageWithLayout = () => {
                   placeholder="0%"
                   min={0}
                   max={100}
-                  {...register("taxes", { required: true, min: 0, max: 0 })}
+                  {...register("taxes", { required: false, min: 0, max: 100 })}
                   className={`input ${
                     errors.taxes ? "!border-red-500" : null
                   } `}
@@ -412,7 +494,7 @@ const OrderanNew: NextPageWithLayout = () => {
                 <input
                   type="number"
                   placeholder="Rp 0"
-                  {...register("additional_cost", { required: true })}
+                  {...register("additional_cost", { required: false })}
                   className={`input ${
                     errors.additional_cost ? "!border-red-500" : null
                   } `}
@@ -446,7 +528,7 @@ const OrderanNew: NextPageWithLayout = () => {
           </div>
 
           {/* Sisi Kanan */}
-          <div className="container h-fit">
+          <div className="container h-fit pb-5">
             <h3 className="raleway text-base font-bold text-indigo-600">
               Rincian Pesanan
             </h3>
@@ -475,7 +557,7 @@ const OrderanNew: NextPageWithLayout = () => {
               <p className="font-medium text-gray-600">Biaya Tambahan</p>
               <h5 className="font-medium">
                 {/* {rupiahConverter(transactions?.sub_total as number)} */}+{" "}
-                {rupiahConverter(watchAdditional[2])}
+                {rupiahConverter(watchAdditional[2] ? watchAdditional[2] : 0)}
               </h5>
             </div>
             <div className="flex items-center justify-between text-base">
@@ -483,7 +565,10 @@ const OrderanNew: NextPageWithLayout = () => {
               <h5 className="font-semibold text-indigo-500">
                 {/* {rupiahConverter(transactions?.sub_total as number)} */}
                 {rupiahConverter(
-                  getSubTotal() - getDiscount() + getTaxes() + parseInt(watchAdditional[2])
+                  getSubTotal() -
+                    getDiscount() +
+                    getTaxes() +
+                    parseInt(watchAdditional[2] ? watchAdditional[2] : 0)
                 )}
               </h5>
             </div>
@@ -507,7 +592,7 @@ const OrderanNew: NextPageWithLayout = () => {
               Tambah Transaksi
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </>
   );

@@ -69,20 +69,46 @@ export const transactionRouter = router({
   create: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
-        price: z.number(),
-        type: z.enum(["kiloan", "selimut", "kaos", "bed_cover", "lainnya"]),
+        customer_id: z.number(),
+        total: z.number(),
+        sub_total: z.number(),
+        cashier_id: z.string(),
+        invoice_code: z.string(),
         outlet_id: z.number(),
+        additional_cost: z.number(),
+        discount: z.number(),
+        taxes: z.number(),
+        status: z.enum(["new" , "on_process" , "finished" , "picked_up"]),
+        is_paid: z.boolean(),
+        transaction_details: z.object({
+            product_id: z.number(),
+            quantity: z.number(),
+            description: z.string()
+        }).array()
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.products.create({
+      const now = new Date()
+      return ctx.prisma.transactions.create({
         data: {
-          name: input.name,
-          price: input.price,
-          type: input.type,
+          customer_id: input.customer_id,
+          total: input.total,
+          sub_total: input.sub_total,
+          cashier_id: input.cashier_id,
+          invoice_code: input.invoice_code,
           outlet_id: input.outlet_id,
-          sold: 0,
+          additional_cost: input.additional_cost,
+          discount: input.discount,
+          taxes: input.taxes,  
+          status: input.status,
+          is_paid: input.is_paid,
+          deadline: now,
+          paid_at: now,
+          transaction_details : {
+            createMany : {
+              data: input.transaction_details
+            }
+          }
         },
       });
     }),
