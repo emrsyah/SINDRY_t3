@@ -123,9 +123,9 @@ const OrderanDetail: NextPageWithLayout = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold">Detail Orderan</h3>
             <div className="flex items-center gap-2">
-              <button className="btn-primary gap-2 rounded px-3">
+              <Link href={`edit/${oid}`} className="btn-primary gap-2 rounded px-3">
                 Edit Pesanan <UilEditAlt size="20" />
-              </button>
+              </Link>
               <TransactionMoreButton setIsOpen={setIsOpen} />
             </div>
           </div>

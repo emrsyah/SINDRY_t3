@@ -58,7 +58,7 @@ const Index: NextPageWithLayout = () => {
         <h3 className="text-lg raleway font-extrabold text-indigo-800">
           Atur Pelanggan{" "}
           <span className="text-base font-medium text-gray-500">
-            ({data?.length})
+          ({data?.length ? data.length : 0})
           </span>
         </h3>
         <Link href={'pelanggan/new'} className="btn-primary rounded px-3 font-semibold">

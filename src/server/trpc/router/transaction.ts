@@ -53,16 +53,55 @@ export const transactionRouter = router({
               email: true,
             },
           },
-          transaction_details : {
-            include : {
-                products : {
-                    select : {
-                        price: true,
-                        name: true
-                    }
-                }
+          transaction_details: {
+            include: {
+              products: {
+                select: {
+                  price: true,
+                  name: true,
+                },
+              },
+            },
+          },
+        },
+      });
+    }),
+  getByIdComplete: protectedProcedure
+    .input(
+      z.object({
+        id: z.number(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.transactions.findUnique({
+        where: {
+          id: input.id,
+        },
+        include: {
+          outlets: {
+            include: {
+              customers: true,
+              products: true,
             }
-          }
+          },
+          customers: {
+            select: {
+              name: true,
+              address: true,
+              contact: true,
+            },
+          },
+          user: {
+            select: {
+              name: true,
+              email: true,
+            },
+          },
+          transaction_details: {
+            include: {
+              products: true
+            },
+          },
         },
       });
     }),
@@ -78,17 +117,19 @@ export const transactionRouter = router({
         additional_cost: z.number(),
         discount: z.number(),
         taxes: z.number(),
-        status: z.enum(["new" , "on_process" , "finished" , "picked_up"]),
+        status: z.enum(["new", "on_process", "finished", "picked_up"]),
         is_paid: z.boolean(),
-        transaction_details: z.object({
+        transaction_details: z
+          .object({
             product_id: z.number(),
             quantity: z.number(),
-            description: z.string()
-        }).array()
+            description: z.string(),
+          })
+          .array(),
       })
     )
     .mutation(({ ctx, input }) => {
-      const now = new Date()
+      const now = new Date();
       return ctx.prisma.transactions.create({
         data: {
           customer_id: input.customer_id,
@@ -99,16 +140,16 @@ export const transactionRouter = router({
           outlet_id: input.outlet_id,
           additional_cost: input.additional_cost,
           discount: input.discount,
-          taxes: input.taxes,  
+          taxes: input.taxes,
           status: input.status,
           is_paid: input.is_paid,
           deadline: now,
           paid_at: now,
-          transaction_details : {
-            createMany : {
-              data: input.transaction_details
-            }
-          }
+          transaction_details: {
+            createMany: {
+              data: input.transaction_details,
+            },
+          },
         },
       });
     }),

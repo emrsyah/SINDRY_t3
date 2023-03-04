@@ -26,6 +26,7 @@ import { UilMinus, UilPlus, UilTrashAlt } from "@iconscout/react-unicons";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { generateRandomId } from "../../../../../helpers/generateRandomId";
+import { useEffect } from "react";
 
 const OrderanNew: NextPageWithLayout = () => {
   const { data: session } = useSession();
@@ -37,12 +38,12 @@ const OrderanNew: NextPageWithLayout = () => {
       path: `/app/admin/orderan`,
     },
     {
-      name: "Pilih Outlet",
-      path: `/app/admin/orderan/select-outlet`,
+      name: "Detail Orderan",
+      path: `/app/admin/orderan/${oid}`,
     },
     {
-      name: "Orderan Baru",
-      path: `/app/admin/orderan/new/${oid}`,
+      name: "Edit Orderan",
+      path: `/app/admin/orderan/edit/${oid}`,
     },
   ];
 
@@ -121,6 +122,69 @@ const OrderanNew: NextPageWithLayout = () => {
       }
     );
 
+  const { data: transactionsComplete, isLoading: loadingTransactionsComplete } =
+    trpc.transaction.getByIdComplete.useQuery(
+      {
+        id: parseInt(oid as string),
+      },
+      {
+        onSuccess: (data) => {
+          // Set Form Tipe Input
+          setValue("discount", data?.discount as number);
+          setValue("taxes", data?.taxes as number);
+          setValue("additional_cost", data?.additional_cost as number);
+
+          // Set Form Tipe Select
+          const localSelectedStatus = transactionStatusOptions.find(
+            (d) => d.value === data?.status
+          );
+          const tmpPaidStatus = data?.is_paid ? 1 : 0;
+          const localSelectedIsPaid = paidStatusOptions.find(
+            (d) => d.value == tmpPaidStatus
+          );
+          setSelectedTransactionStat(localSelectedStatus);
+          setSelectedPaidStat(localSelectedIsPaid);
+
+          // Set Form Customer
+          const customerDataSelectFriendly = data?.outlets.customers.map((d) => {
+            return {
+              ...d,
+              value: d.id,
+              label: d.name,
+            };
+          });
+          const localSelectedCustomer = customerDataSelectFriendly?.find(d => d.id ===data?.customer_id)
+          setCustomerOptions(customerDataSelectFriendly as CustomerSelectFriendly[]);
+          setSelectedCustomer(localSelectedCustomer)
+
+          // Set Form Product
+          const productsDataSelectFriendly = data?.outlets.products.map((d) => {
+            return {
+              ...d,
+              value: d.id,
+              label: d.name,
+            };
+          });
+          const productSelectedIds = data?.transaction_details.map(d => d.product_id)
+          // const localAddedProduct = productsDataSelectFriendly?.filter(d=> productSelectedIds?.includes(d.id))
+          const localFilteredProduct = productsDataSelectFriendly?.filter(d=> !productSelectedIds?.includes(d.id))
+          const toSelectFriendlyAddedProducts = data?.transaction_details.map((d)=>{
+            return {
+              ...d.products,
+              value: d.products.id,
+              label: d.products.name,
+              quantity: d.quantity,
+              isBefore: true
+            }
+          })
+          setAddedProductOptions(toSelectFriendlyAddedProducts as AddedProductProps[])
+          setProductOptions(localFilteredProduct as ProductSelectFriendly[]);
+
+        },
+      }
+    );
+
+
   const changeCustomerHandler = (data: CustomerSelectFriendly | null) => {
     if (data === null) {
       setSelectedCustomer(undefined);
@@ -198,7 +262,7 @@ const OrderanNew: NextPageWithLayout = () => {
   const createTransaction = trpc.transaction.create.useMutation({
     onSuccess: (data) => {
       toast.success("Berhasil Menambahkan Data", { autoClose: 1000 });
-      router.push("/app/admin/orderan")
+      router.push("/app/admin/orderan");
     },
     onError: () => {
       toast.error("Gagal Menambahkan Data", { autoClose: 1000 });
@@ -207,15 +271,21 @@ const OrderanNew: NextPageWithLayout = () => {
 
   const submitHandler = handleSubmit((data) => {
     let customerId = selectedCustomer === undefined ? -1 : selectedCustomer.id;
-    const discount = parseInt(data.discount.toString() ? data.discount.toString() : "0");
+    const discount = parseInt(
+      data.discount.toString() ? data.discount.toString() : "0"
+    );
     const taxes = parseInt(data.taxes.toString() ? data.taxes.toString() : "0");
     const subTotal = getSubTotal();
-    const additionalCost = parseInt(data.additional_cost.toString() ? data.additional_cost.toString() : "0");
+    const additionalCost = parseInt(
+      data.additional_cost.toString() ? data.additional_cost.toString() : "0"
+    );
     const total =
       subTotal -
       getDiscount() +
       getTaxes() +
-      parseInt(watchAdditional[2].toString() ? watchAdditional[2].toString() : "0");
+      parseInt(
+        watchAdditional[2].toString() ? watchAdditional[2].toString() : "0"
+      );
     const userId = session?.user?.id;
     const randomId = generateRandomId(8);
     const invoiceCode = `ID-${randomId}`;
@@ -238,7 +308,6 @@ const OrderanNew: NextPageWithLayout = () => {
       });
       customerId = createCustomer.data?.id as number;
     }
-
 
     // Add Transaction and transaction details
     createTransaction.mutate({
