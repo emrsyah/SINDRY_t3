@@ -35,6 +35,21 @@ export const productRouter = router({
         },
       });
     }),
+  getMostSold: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.products.findMany({
+      orderBy: {
+        sold: "desc",
+      },
+      take: 5,
+      include: {
+        outlets: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  }),
   create: protectedProcedure
     .input(
       z.object({

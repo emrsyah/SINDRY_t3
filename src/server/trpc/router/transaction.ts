@@ -23,6 +23,27 @@ export const transactionRouter = router({
       },
     });
   }),
+  getLast: protectedProcedure
+    .input(
+      z.object({
+        limit: z.number(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.transactions.findMany({
+        orderBy: {
+          created_at: "desc",
+        },
+        take: input.limit,
+        include: {
+          outlets: {
+            select: {
+              name: true
+            }
+          }
+        }
+      });
+    }),
   getById: protectedProcedure
     .input(
       z.object({
@@ -192,12 +213,12 @@ export const transactionRouter = router({
           is_paid: input.is_paid,
           transaction_details: {
             deleteMany: {
-              transaction_id: input.id
+              transaction_id: input.id,
             },
             createMany: {
-              data: input.transaction_details
-            }
-          }
+              data: input.transaction_details,
+            },
+          },
         },
       });
     }),
@@ -214,4 +235,15 @@ export const transactionRouter = router({
         },
       });
     }),
+  getSalesStatistics: protectedProcedure.query(({ ctx }) => {
+    return ctx.prisma.transactions.aggregate({
+      _sum: {
+        total: true,
+      },
+      _avg: {
+        total: true,
+      },
+      _count: true,
+    });
+  }),
 });

@@ -56,11 +56,7 @@ const getSidebarIcon = (name: string) => {
 const SidebarAdmin = () => {
   const { data: sessionData, status } = useSession();
   const router = useRouter()
-
-  useEffect(() => {
-    // console.log(sessionData)
-    // console.log(status)
-  }, [sessionData, status]);
+  console.log(sessionData?.expires)
 
   const extractLocation = () => {
     const ar = router.pathname.split("/");
@@ -75,10 +71,10 @@ const SidebarAdmin = () => {
   return (
     <nav className="flex h-screen flex-col sticky top-0 gap-4 border-r-[1.3px] bg-gray-50 p-6 pt-7">
     <SidebarProfile email={sessionData?.user?.email as string} role={sessionData?.user?.role as "admin" | "owner" | "cashier"} />
-      <button className="btn-primary flex items-center justify-center gap-1 rounded-md">
+      <Link href={"orderan/select-outlet"} className="btn-primary flex items-center justify-center gap-1 rounded-md">
         Buat Transaksi
         <UilPlus size="20" />
-      </button>
+      </Link>
       <div className="flex flex-col gap-1">
         {sidebarItems.map((item, i) => (
           <Link

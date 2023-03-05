@@ -126,7 +126,7 @@ const ProdukNew: NextPageWithLayout = () => {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
-              <p className="text-sm font-semibold text-gray-500">Gender</p>
+              <p className="text-sm font-semibold text-gray-500">Tipe</p>
               <Select
                 options={productTypeOptions}
                 value={selectedType}

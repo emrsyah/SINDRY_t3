@@ -95,6 +95,9 @@
     @apply flex flex flex-col flex-col gap-3 gap-3 rounded-md rounded-md
     py-3 py-3 px-5 px-5 text-sm text-sm shadow shadow;
   }
+  .dashboardTitle{
+    @apply font-semibold raleway text-gray-500
+  }
 }
 
 
