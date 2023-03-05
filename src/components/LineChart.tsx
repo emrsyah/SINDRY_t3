@@ -48,7 +48,7 @@ import {
       },
     };
     const data = {
-      labels: arrayLabel.reverse(),
+      labels: arrayLabel?.reverse(),
       datasets: [
         {
           label: "Transaksi",

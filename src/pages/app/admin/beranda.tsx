@@ -6,14 +6,16 @@ import rupiahConverter from "../../../helpers/rupiahConverter";
 import { UilMoneyStack } from "@iconscout/react-unicons";
 import { trpc } from "../../../utils/trpc";
 import { LineChart } from "../../../components/LineChart";
+import { PieChart } from "../../../components/PieChart";
 
 const Beranda: NextPageWithLayout = () => {
   const { data: salesData } = trpc.transaction.getSalesStatistics.useQuery();
-  const { data: lastTransaction } = trpc.transaction.getLast.useQuery({
-    limit: 5,
-  });
+  const { data: lastTransaction, isLoading: loadingLastTxn } =
+    trpc.transaction.getLast.useQuery({
+      limit: 5,
+    });
   const { data: topProduct } = trpc.product.getMostSold.useQuery();
-
+  const { data: topPerOutlet } = trpc.outlet.getTopSales.useQuery();
   return (
     <div>
       <div className="flex w-full items-center justify-between gap-1">
@@ -68,7 +70,11 @@ const Beranda: NextPageWithLayout = () => {
             Statistik Penjualan
           </h3>
           <div>
-            <LineChart submitted={lastTransaction} />
+            {loadingLastTxn ? (
+              <div>Mengambil Data...</div>
+            ) : (
+              <LineChart submitted={lastTransaction} />
+            )}
           </div>
         </div>
         <div className="container">
@@ -77,15 +83,48 @@ const Beranda: NextPageWithLayout = () => {
             Produk Favorit
           </h3>
           {topProduct?.map((d, i) => (
-            <div key={d.id} className="grid grid-cols-9">
+            <div key={d.id} className="grid grid-cols-9 gap-2">
               <div className="col-span-7 flex gap-2">
-                <p className="col-span-1 font-medium text-gray-500">{i + 1}</p>
+                <p className="col-span-1 font-medium text-gray-500">
+                  {i >= 3
+                    ? i + 1
+                    : i + 1 === 1
+                    ? "🥇"
+                    : i + 1 === 2
+                    ? "🥈"
+                    : "🥉"}
+                </p>
                 <span className="font-medium text-gray-400">|</span>
-                <h5 className="col-span-6 font-medium text-gray-900">{d.name}</h5>
+                <h5 className="col-span-6 font-medium truncate text-gray-900">
+                  {d.name}
+                </h5>
               </div>
-              <p className="col-span-2 text-gray-500">Terjual {d.sold}</p>
+              <p className="col-span-2 text-xs text-gray-500">
+                Terjual{" "}
+                <span className="font-medium text-gray-700">{d.sold}</span>
+              </p>
             </div>
           ))}
+        </div>
+        <div className="col-span-3 flex gap-3">
+          <div className="container">
+            <h3 className="raleway text-base font-semibold text-black">
+              <span className="text-lg">🏪</span>
+              Penjualan Per Outlet
+            </h3>
+            <div className="w-96 h-96">
+              <PieChart dataP={topPerOutlet} />
+            </div>
+          </div>
+          <div className="container">
+            <h3 className="raleway text-base font-semibold text-black">
+              <span className="text-lg">🧺</span>
+              Penjualan Per Paket
+            </h3>
+            <div className="w-96 h-96">
+              <PieChart dataP={topPerOutlet} />
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -18,6 +18,14 @@ export const outletRouter = router({
         },
       });
     }),
+  getTopSales: protectedProcedure.query(({ctx})=>{
+    return ctx.prisma.outlets.findMany({
+      orderBy: {
+        total_sales: "desc"
+      },
+      take: 5
+    })
+  }),
   create: protectedProcedure
     .input(
       z.object({
