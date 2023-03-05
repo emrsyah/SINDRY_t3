@@ -26,9 +26,8 @@ import { UilMinus, UilPlus, UilTrashAlt } from "@iconscout/react-unicons";
 import { toast } from "react-toastify";
 import { useSession } from "next-auth/react";
 import { generateRandomId } from "../../../../../helpers/generateRandomId";
-import { useEffect } from "react";
 
-const OrderanNew: NextPageWithLayout = () => {
+const OrderanEdit: NextPageWithLayout = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const { oid } = router.query;
@@ -82,46 +81,6 @@ const OrderanNew: NextPageWithLayout = () => {
   const [selectedProduct, setSelectedProduct] =
     useState<ProductSelectFriendly>();
 
-  const { data: customers, isLoading: loadingCustomers } =
-    trpc.customer.getByOutlet.useQuery(
-      {
-        id: parseInt(oid as string),
-      },
-      {
-        onSuccess: (data) => {
-          const dataSelectFriendly = data.map((d) => {
-            return {
-              ...d,
-              value: d.id,
-              label: d.name,
-            };
-          });
-          console.log(dataSelectFriendly);
-          setCustomerOptions(dataSelectFriendly);
-        },
-      }
-    );
-
-  const { data: products, isLoading: loadingProducts } =
-    trpc.product.getByOutlet.useQuery(
-      {
-        id: parseInt(oid as string),
-      },
-      {
-        onSuccess: (data) => {
-          const dataSelectFriendly = data.map((d) => {
-            return {
-              ...d,
-              value: d.id,
-              label: d.name,
-            };
-          });
-          console.log(dataSelectFriendly);
-          setProductOptions(dataSelectFriendly);
-        },
-      }
-    );
-
   const { data: transactionsComplete, isLoading: loadingTransactionsComplete } =
     trpc.transaction.getByIdComplete.useQuery(
       {
@@ -146,16 +105,25 @@ const OrderanNew: NextPageWithLayout = () => {
           setSelectedPaidStat(localSelectedIsPaid);
 
           // Set Form Customer
-          const customerDataSelectFriendly = data?.outlets.customers.map((d) => {
-            return {
-              ...d,
-              value: d.id,
-              label: d.name,
-            };
-          });
-          const localSelectedCustomer = customerDataSelectFriendly?.find(d => d.id ===data?.customer_id)
-          setCustomerOptions(customerDataSelectFriendly as CustomerSelectFriendly[]);
-          setSelectedCustomer(localSelectedCustomer)
+          const customerDataSelectFriendly = data?.outlets.customers.map(
+            (d) => {
+              return {
+                ...d,
+                value: d.id,
+                label: d.name,
+              };
+            }
+          );
+          const localSelectedCustomer = customerDataSelectFriendly?.find(
+            (d) => d.id === data?.customer_id
+          );
+          setCustomerOptions(
+            customerDataSelectFriendly as CustomerSelectFriendly[]
+          );
+          setSelectedCustomer(localSelectedCustomer);
+          setValue("name", localSelectedCustomer?.name as string);
+          setValue("address", localSelectedCustomer?.address as string);
+          setValue("contact", localSelectedCustomer?.contact as string);
 
           // Set Form Product
           const productsDataSelectFriendly = data?.outlets.products.map((d) => {
@@ -165,43 +133,39 @@ const OrderanNew: NextPageWithLayout = () => {
               label: d.name,
             };
           });
-          const productSelectedIds = data?.transaction_details.map(d => d.product_id)
-          // const localAddedProduct = productsDataSelectFriendly?.filter(d=> productSelectedIds?.includes(d.id))
-          const localFilteredProduct = productsDataSelectFriendly?.filter(d=> !productSelectedIds?.includes(d.id))
-          const toSelectFriendlyAddedProducts = data?.transaction_details.map((d)=>{
-            return {
-              ...d.products,
-              value: d.products.id,
-              label: d.products.name,
-              quantity: d.quantity,
-              isBefore: true
+          const productSelectedIds = data?.transaction_details.map(
+            (d) => d.product_id
+          );
+          const localFilteredProduct = productsDataSelectFriendly?.filter(
+            (d) => !productSelectedIds?.includes(d.id)
+          );
+          const toSelectFriendlyAddedProducts = data?.transaction_details.map(
+            (d) => {
+              return {
+                ...d.products,
+                value: d.products.id,
+                label: d.products.name,
+                quantity: d.quantity,
+              };
             }
-          })
-          setAddedProductOptions(toSelectFriendlyAddedProducts as AddedProductProps[])
+          );
+          setAddedProductOptions(
+            toSelectFriendlyAddedProducts as AddedProductProps[]
+          );
           setProductOptions(localFilteredProduct as ProductSelectFriendly[]);
-
         },
       }
     );
 
-
-  const changeCustomerHandler = (data: CustomerSelectFriendly | null) => {
-    if (data === null) {
-      setSelectedCustomer(undefined);
-      setValue("name", "");
-      setValue("address", "");
-      setValue("contact", "");
-      setSelectedGender(genderOptions[0] as Gender);
-    } else {
-      setSelectedCustomer(data);
-      setValue("name", data.name);
-      setValue("address", data.address);
-      setValue("contact", data.contact);
-      const selectedGenderLocal = genderOptions.find(
-        (d) => d.value === data.gender
-      );
-      setSelectedGender(selectedGenderLocal as Gender);
-    }
+  const changeCustomerHandler = (data: CustomerSelectFriendly) => {
+    setSelectedCustomer(data);
+    setValue("name", data.name);
+    setValue("address", data.address);
+    setValue("contact", data.contact);
+    const selectedGenderLocal = genderOptions.find(
+      (d) => d.value === data.gender
+    );
+    setSelectedGender(selectedGenderLocal as Gender);
   };
 
   const addProductHandler = (data: ProductSelectFriendly) => {
@@ -250,19 +214,11 @@ const OrderanNew: NextPageWithLayout = () => {
     return ((getSubTotal() - getDiscount()) * taxes) / 100;
   };
 
-  const createCustomer = trpc.customer.create.useMutation({
-    onSuccess: (data) => {
-      return data.id;
-    },
-    onError: () => {
-      toast.error("Gagal Menambahkan Data", { autoClose: 1000 });
-    },
-  });
 
-  const createTransaction = trpc.transaction.create.useMutation({
+  const updateTransaction = trpc.transaction.update.useMutation({
     onSuccess: (data) => {
       toast.success("Berhasil Menambahkan Data", { autoClose: 1000 });
-      router.push("/app/admin/orderan");
+      router.push(`/app/admin/orderan/${oid}`);
     },
     onError: () => {
       toast.error("Gagal Menambahkan Data", { autoClose: 1000 });
@@ -270,7 +226,7 @@ const OrderanNew: NextPageWithLayout = () => {
   });
 
   const submitHandler = handleSubmit((data) => {
-    let customerId = selectedCustomer === undefined ? -1 : selectedCustomer.id;
+    const customerId = selectedCustomer === undefined ? -1 : selectedCustomer.id;
     const discount = parseInt(
       data.discount.toString() ? data.discount.toString() : "0"
     );
@@ -287,8 +243,6 @@ const OrderanNew: NextPageWithLayout = () => {
         watchAdditional[2].toString() ? watchAdditional[2].toString() : "0"
       );
     const userId = session?.user?.id;
-    const randomId = generateRandomId(8);
-    const invoiceCode = `ID-${randomId}`;
     const toAddedProducts = addedProductOptions.map((d) => {
       return {
         product_id: d.id,
@@ -297,26 +251,13 @@ const OrderanNew: NextPageWithLayout = () => {
       };
     });
 
-    // * Add Customer If Create New
-    if (selectedCustomer === undefined) {
-      createCustomer.mutate({
-        name: data.name,
-        address: data.address,
-        contact: data.contact,
-        gender: selectedGender.value,
-        outlet_id: parseInt(oid as string),
-      });
-      customerId = createCustomer.data?.id as number;
-    }
-
     // Add Transaction and transaction details
-    createTransaction.mutate({
+    updateTransaction.mutate({
+      id: parseInt(oid as string),
       customer_id: customerId,
       total: total,
       sub_total: subTotal,
       cashier_id: userId as string,
-      invoice_code: invoiceCode,
-      outlet_id: parseInt(oid as string),
       additional_cost: additionalCost,
       discount: discount,
       taxes: taxes,
@@ -335,7 +276,7 @@ const OrderanNew: NextPageWithLayout = () => {
       <BreadCrumbs items={breadItems} />
       <div>
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-bold">Orderan Baru</h3>
+          <h3 className="text-xl font-bold">Edit Orderan</h3>
         </div>
         <form
           onSubmit={submitHandler}
@@ -351,7 +292,6 @@ const OrderanNew: NextPageWithLayout = () => {
                 <Select
                   options={customerOptions}
                   value={selectedCustomer}
-                  isClearable={true}
                   className="selectInput"
                   onChange={(data) =>
                     // setSelectedCustomer(data as CustomerSelectFriendly)
@@ -658,7 +598,7 @@ const OrderanNew: NextPageWithLayout = () => {
               })}
             />
             <button className="btn-primary justify-center rounded">
-              Tambah Transaksi
+              Simpan Transaksi
             </button>
           </div>
         </form>
@@ -667,8 +607,8 @@ const OrderanNew: NextPageWithLayout = () => {
   );
 };
 
-export default OrderanNew;
+export default OrderanEdit;
 
-OrderanNew.getLayout = function getLayout(page: ReactElement) {
+OrderanEdit.getLayout = function getLayout(page: ReactElement) {
   return <LayoutAdmin>{page}</LayoutAdmin>;
 };

@@ -172,3 +172,6 @@ export interface AddedProductProps extends ProductSelectFriendly{
   quantity: number
 }
 
+export interface AddedProductFromDatabaseProps extends AddedProductProps{
+  isInitial: boolean;
+}

@@ -123,7 +123,10 @@ const OrderanDetail: NextPageWithLayout = () => {
           <div className="flex items-center justify-between">
             <h3 className="text-xl font-bold">Detail Orderan</h3>
             <div className="flex items-center gap-2">
-              <Link href={`edit/${oid}`} className="btn-primary gap-2 rounded px-3">
+              <Link
+                href={`edit/${oid}`}
+                className="btn-primary gap-2 rounded px-3"
+              >
                 Edit Pesanan <UilEditAlt size="20" />
               </Link>
               <TransactionMoreButton setIsOpen={setIsOpen} />
@@ -279,15 +282,18 @@ const OrderanDetail: NextPageWithLayout = () => {
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-200 font-semibold text-indigo-600">
                       {d.products.name.substring(0, 2)}
                     </div>
-                    <h5 className="font-medium text-gray-900">
-                      {d.products.name}
-                    </h5>
+                    <div className="flex flex-col">
+                      <h5 className="font-medium">
+                        {d.products.name}
+                      </h5>
+                      <p className="text-xs font-medium text-indigo-500">{rupiahConverter(d.products.price)}</p>
+                    </div>
                   </div>
                   <h5 className="col-span-1 flex items-center justify-center font-semibold text-gray-500">
                     x{d.quantity}
                   </h5>
-                  <h5 className="col-span-5 flex justify-end font-semibold text-gray-800">
-                    {rupiahConverter(d.products.price)}
+                  <h5 className="col-span-5 flex items-center justify-end font-semibold text-gray-800">
+                    {rupiahConverter(d.products.price * d.quantity)}
                   </h5>
                 </div>
               ))}

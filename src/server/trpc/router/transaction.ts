@@ -82,7 +82,7 @@ export const transactionRouter = router({
             include: {
               customers: true,
               products: true,
-            }
+            },
           },
           customers: {
             select: {
@@ -99,7 +99,7 @@ export const transactionRouter = router({
           },
           transaction_details: {
             include: {
-              products: true
+              products: true,
             },
           },
         },
@@ -157,22 +157,47 @@ export const transactionRouter = router({
     .input(
       z.object({
         id: z.number(),
-        name: z.string(),
-        price: z.number(),
-        type: z.enum(["kiloan", "selimut", "kaos", "bed_cover", "lainnya"]),
-        outlet_id: z.number(),
+        customer_id: z.number(),
+        total: z.number(),
+        sub_total: z.number(),
+        cashier_id: z.string(),
+        additional_cost: z.number(),
+        discount: z.number(),
+        taxes: z.number(),
+        status: z.enum(["new", "on_process", "finished", "picked_up"]),
+        is_paid: z.boolean(),
+        transaction_details: z
+          .object({
+            product_id: z.number(),
+            quantity: z.number(),
+            description: z.string(),
+          })
+          .array(),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.products.update({
+      return ctx.prisma.transactions.update({
         where: {
           id: input.id,
         },
         data: {
-          name: input.name,
-          price: input.price,
-          type: input.type,
-          outlet_id: input.outlet_id,
+          customer_id: input.customer_id,
+          total: input.total,
+          sub_total: input.sub_total,
+          cashier_id: input.cashier_id,
+          additional_cost: input.additional_cost,
+          discount: input.discount,
+          taxes: input.taxes,
+          status: input.status,
+          is_paid: input.is_paid,
+          transaction_details: {
+            deleteMany: {
+              transaction_id: input.id
+            },
+            createMany: {
+              data: input.transaction_details
+            }
+          }
         },
       });
     }),
