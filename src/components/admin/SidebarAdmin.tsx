@@ -39,7 +39,7 @@ const sidebarItems = [
 
 const sidebarItemsAdmin = [
   {
-    path: "/app/a/pengguna",
+    path: "/app/admin/pengguna",
     name: "Pengguna",
   },
 ];
@@ -56,7 +56,7 @@ const getSidebarIcon = (name: string) => {
 const SidebarAdmin = () => {
   const { data: sessionData, status } = useSession();
   const router = useRouter()
-  console.log(sessionData?.expires)
+  // console.log(sessionData?.expires)
 
   const extractLocation = () => {
     const ar = router.pathname.split("/");

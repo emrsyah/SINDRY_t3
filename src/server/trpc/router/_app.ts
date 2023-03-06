@@ -5,6 +5,7 @@ import { exampleRouter } from "./example";
 import { outletRouter } from "./outlet";
 import { productRouter } from './product';
 import { transactionRouter } from './transaction';
+import { userRouter } from "./user";
 
 export const appRouter = router({
   // example: exampleRouter,
@@ -13,6 +14,7 @@ export const appRouter = router({
   auth: authRouter,
   product: productRouter,
   transaction: transactionRouter,
+  user: userRouter
 });
 
 // export type definition of API

@@ -37,18 +37,19 @@ model session {
 }
 
 model user {
-  id            String         @id
+  id            String    @id
   name          String?
-  email         String?        @unique(map: "User_email_key")
-  password      String         @db.VarChar(250)
+  email         String?   @unique(map: "User_email_key")
+  password      String    @db.VarChar(250)
   role          user_role
   emailVerified DateTime?
   image         String?
   account       account[]
   session       session[]
-  outlets       outlets?       @relation(fields: [outletsId], references: [id])
-  outletsId     Int?
-  transactions  transactions[]
+  created_at    DateTime  @default(now()) @db.DateTime(0)
+  outlets      outlets?       @relation(fields: [outletsId], references: [id])
+  outletsId    Int?
+  transactions transactions[]
 }
 
 // model users {
