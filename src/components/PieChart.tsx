@@ -18,8 +18,8 @@ export function PieChart({ dataP }: { dataP: any }) {
       {
         label: "Jumlah Penjualan",
         data: arrayDatas,
-        backgroundColor: translucentColors,
-        borderColor: opaqueColors,
+        backgroundColor: ["rgb(224 231 255)", "rgb(220 252 231)", "rgb(224 242 254)","rgb(252 231 243)", "rgb(255 237 213)"],
+        borderColor: ["rgb(99 102 241)", "rgb(34 197 94)", "rgb(14 165 233)", "rgb(236 72 153)", "rgb(249 115 22)"],
         borderWidth: 1,
       },
     ],
@@ -34,10 +34,6 @@ export function PieChart({ dataP }: { dataP: any }) {
         position: "bottom",
         align: "center",
       },
-      // title: {
-      //   display: true,
-      //   text: "Chart.js Line Chart",
-      // },
     },
   };
   return <Pie data={data} options={options} />;

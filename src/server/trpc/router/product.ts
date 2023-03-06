@@ -50,6 +50,19 @@ export const productRouter = router({
       },
     });
   }),
+  getGroupByCategory: protectedProcedure.query(({ctx}) =>{
+    return ctx.prisma.products.groupBy({
+      by: ["type"],
+      _sum: {
+        sold: true,
+      },
+      orderBy: {
+        _sum: {
+          sold: "desc"
+        }
+      }
+    })
+  }),
   create: protectedProcedure
     .input(
       z.object({

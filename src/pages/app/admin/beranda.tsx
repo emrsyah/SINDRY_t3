@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import LayoutAdmin from "../../../components/LayoutAdmin";
 import type { NextPageWithLayout } from "../../_app";
 import type { ReactElement } from "react";
 import rupiahConverter from "../../../helpers/rupiahConverter";
-import { UilMoneyStack } from "@iconscout/react-unicons";
 import { trpc } from "../../../utils/trpc";
 import { LineChart } from "../../../components/LineChart";
 import { PieChart } from "../../../components/PieChart";
@@ -15,7 +14,18 @@ const Beranda: NextPageWithLayout = () => {
       limit: 5,
     });
   const { data: topProduct } = trpc.product.getMostSold.useQuery();
-  const { data: topPerOutlet } = trpc.outlet.getTopSales.useQuery();
+  const { data: topPerOutlet, isLoading: loadingTopPerOutlet } = trpc.outlet.getTopSales.useQuery();
+  const {data: productPerGroup, isLoading: loadingProductPerGroup} = trpc.product.getGroupByCategory.useQuery(undefined, {
+    select: (data) => {
+      return data.map((d) => {
+        return {
+          total_sales: d._sum.sold,
+          name: d.type
+        }
+      }) 
+    }
+  });
+
   return (
     <div>
       <div className="flex w-full items-center justify-between gap-1">
@@ -113,7 +123,11 @@ const Beranda: NextPageWithLayout = () => {
               Penjualan Per Outlet
             </h3>
             <div className="w-96 h-96">
+              {loadingTopPerOutlet ? (
+                <div>Loading...</div>
+              ) : (
               <PieChart dataP={topPerOutlet} />
+              )}
             </div>
           </div>
           <div className="container">
@@ -122,7 +136,11 @@ const Beranda: NextPageWithLayout = () => {
               Penjualan Per Paket
             </h3>
             <div className="w-96 h-96">
-              <PieChart dataP={topPerOutlet} />
+            {loadingProductPerGroup ? (
+                <div>Loading...</div>
+              ) : (
+              <PieChart dataP={productPerGroup} />
+              )}
             </div>
           </div>
         </div>
