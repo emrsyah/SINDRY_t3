@@ -6,6 +6,11 @@ import React, { useEffect } from "react";
 //   UilAngleRight,
 //   UilAngleLeft,
 // } from "@iconscout/react-unicons";
+import {
+  UilDirection,
+  UilAngleUp,
+  UilAngleDown,
+} from "@iconscout/react-unicons";
 import { useTable, useFilters, useSortBy, usePagination } from "react-table";
 import { useRouter } from "next/router";
 
@@ -44,7 +49,8 @@ export default function Table({
   }, [filterInput]);
 
   const rowClickHandler = (id: number) => {
-    const curPath = (navigate.pathname.split("/")[navigate.pathname.split('/').length - 1])
+    const curPath =
+      navigate.pathname.split("/")[navigate.pathname.split("/").length - 1];
     navigate.push(`${curPath}/${id.toString()}`);
     // console.log(id)
   };
@@ -62,22 +68,15 @@ export default function Table({
                 <th
                   key={i}
                   {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className="rounded-sm p-3 font-semibold text-gray-500"
+                  className="rounded-sm py-0 px-3 font-semibold text-gray-500"
                 >
-                  {column.render("Header")}{" "}
-                  {column.isSorted
-                    ? column.isSortedDesc
-                      ? //   <Icon
-                        //     icon="ant-design:caret-down-filled"
-                        //     className="inline"
-                        //   />
-                        "v"
-                      : //   <Icon
-                        //     icon="ant-design:caret-up-filled"
-                        //     className="inline"
-                        //   />
-                        "^"
-                    : ""}
+                  <div className="flex justify-between items-center">
+                    <h5 className="">{column.render("Header")}</h5>
+                    <div className="flex flex-col text-gray-400 mr-2">
+                      <UilAngleUp size="18" className={`translate-y-[5px] m-0 p-0 ${column.isSortedDesc ? "text-indigo-500" : null}`} />
+                      <UilAngleDown size="18" className={`-translate-y-[5px] m-0 p-0 ${column.isSorted && !column.isSortedDesc ? "text-indigo-500" : null}`} />
+                    </div>
+                  </div>
                 </th>
               ))}
               {/* <th className="font-semibold rounded-sm text-gray-500 p-2">
