@@ -59,6 +59,16 @@ function DeleteConfirmationModal({
     },
   });
 
+  const deleteUser = trpc.user.delete.useMutation({
+    onSuccess: () => {
+      toast.info("Berhasil Menghapus Data", { autoClose: 1000 });
+      router.push(`/app/admin/${type}`);
+    },
+    onError: () => {
+      toast.error("Gagal Menghapus Data", { autoClose: 1000 });
+    },
+  });
+
   // * Delete Button Handler
   const deleteHandler = async () => {
     if (type === "outlet") {
@@ -76,6 +86,11 @@ function DeleteConfirmationModal({
     } else if (type === "orderan") {
       deleteTransaction.mutate({
         id: id,
+      });
+    } else if (type === "pengguna") {
+      const strId = id.toString()
+      deleteUser.mutate({
+        id: strId,
       });
     }
   };

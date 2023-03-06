@@ -38,21 +38,23 @@ export const userRouter = router({
   create: protectedProcedure
     .input(
       z.object({
+        id: z.string(),
         name: z.string(),
-        address: z.string(),
-        contact: z.string(),
-        gender: z.enum(["L", "P"]),
+        email: z.string(),
+        password: z.string(),
+        role: z.enum(["admin", "owner", "cashier"]),
         outlet_id: z.number(),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.customers.create({
+      return ctx.prisma.user.create({
         data: {
+          id: input.id,
           name: input.name,
-          address: input.address,
-          contact: input.contact,
-          gender: input.gender,
-          outlet_id: input.outlet_id,
+          email: input.email,
+          password: input.password,
+          role: input.role,
+          outletsId: input.outlet_id
         },
       });
     }),
@@ -82,11 +84,11 @@ export const userRouter = router({
   delete: protectedProcedure
     .input(
       z.object({
-        id: z.number(),
+        id: z.string(),
       })
     )
     .mutation(({ ctx, input }) => {
-      return ctx.prisma.customers.delete({
+      return ctx.prisma.user.delete({
         where: {
           id: input.id,
         },
