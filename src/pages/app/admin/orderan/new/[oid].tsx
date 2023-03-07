@@ -217,7 +217,6 @@ const OrderanNew: NextPageWithLayout = () => {
       getTaxes() +
       parseInt(watchAdditional[2].toString() ? watchAdditional[2].toString() : "0");
     const userId = session?.user?.id;
-    console.log(session?.user)
     const randomId = generateRandomId(8);
     const invoiceCode = `ID-${randomId}`;
     const toAddedProducts = addedProductOptions.map((d) => {
@@ -239,9 +238,7 @@ const OrderanNew: NextPageWithLayout = () => {
       });
       customerId = createCustomer.data?.id as number;
     }
-
-
-    // Add Transaction and transaction details
+    // // Add Transaction and transaction details
     createTransaction.mutate({
       customer_id: customerId,
       total: total,

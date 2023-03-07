@@ -15,6 +15,8 @@ import { UilTrashAlt } from "@iconscout/react-unicons";
 import DeleteConfirmationModal from "../../../../components/DeleteConfirmationModal";
 import BreadCrumbs from "../../../../components/BreadCrumbs";
 import Select from "react-select";
+import UserMoreButton from "../../../../components/UserMoreButton";
+import ResetPasswordModal from "../../../../components/admin/ResetPasswordModal";
 
 type UserProps = RouterOutputs["user"]["getById"];
 const PenggunaDetail: NextPageWithLayout = () => {
@@ -40,6 +42,7 @@ const PenggunaDetail: NextPageWithLayout = () => {
   } = useForm<UserProps>();
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpenReset, setIsOpenReset] = useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<Role>();
   const [selectedOutlet, setSelectedOutlet] = useState<OutletSelectFriendly>();
   const [outlets, setOutlets] = useState<OutletSelectFriendly[]>([]);
@@ -115,6 +118,7 @@ const PenggunaDetail: NextPageWithLayout = () => {
         setIsOpen={setIsOpen}
         id={parseInt(pid as string)}
       />
+      <ResetPasswordModal id={pid as string} isOpen={isOpenReset} setIsOpen={setIsOpenReset}  />
       <BreadCrumbs items={breadItems} />
       <form onSubmit={submitHandler}>
         <div className="flex items-center justify-between">
@@ -126,13 +130,14 @@ const PenggunaDetail: NextPageWithLayout = () => {
           </div>
           <div className="flex items-center gap-2">
             <button className="btn-primary rounded">Simpan Data</button>
-            <button
+            {/* <button
               type="button"
               onClick={() => setIsOpen(true)}
               className="btn-secondary rounded p-2 hover:border-red-500 hover:bg-red-50 hover:text-red-500"
             >
               <UilTrashAlt size="20" />
-            </button>
+            </button> */}
+            <UserMoreButton setIsOpen={setIsOpen} setIsOpenReset={setIsOpenReset} />
           </div>
         </div>
         <div className="my-6 flex flex-col gap-3">

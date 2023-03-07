@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, adminProcedure } from '../trpc';
 
 export const userRouter = router({
   getAll: protectedProcedure.query(({ ctx }) => {
@@ -94,4 +94,19 @@ export const userRouter = router({
         },
       });
     }),
+  resetPassword: adminProcedure.input(
+    z.object({
+      id: z.string(),
+      password: z.string()
+    })
+  ).mutation(({ctx, input}) => {
+    return ctx.prisma.user.update({
+      where: {
+        id: input.id
+      },
+      data: {
+        password: input.password
+      }
+    })
+  }),
 });

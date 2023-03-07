@@ -33,7 +33,34 @@ const isAuthed = t.middleware(({ ctx, next }) => {
   });
 });
 
+// Middleware Buat Role Admin =>
+const isAdmin = t.middleware(({ ctx, next }) => {
+  if (ctx.session?.user?.role !== "admin") {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session?.user },
+    },
+  });
+});
+
+const isAdminOrOwner = t.middleware(({ ctx, next }) => {
+  if (ctx.session?.user?.role !== "admin" && ctx.session?.user?.role !== "owner") {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  });
+});
+
+
 /**
  * Protected procedure
  **/
 export const protectedProcedure = t.procedure.use(isAuthed);
+export const adminProcedure = t.procedure.use(isAuthed).use(isAdmin);
