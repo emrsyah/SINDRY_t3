@@ -1,5 +1,5 @@
 import React from "react";
-import SidebarAdmin from "./admin/SidebarAdmin";
+import SidebarAdmin from "./SidebarAdmin";
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';

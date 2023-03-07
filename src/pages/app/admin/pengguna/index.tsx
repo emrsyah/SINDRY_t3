@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import LayoutAdmin from "../../../../components/LayoutAdmin";
+import LayoutAdmin from "../../../../components/admin/LayoutAdmin";
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "../../../_app";
 import { UilPlus } from "@iconscout/react-unicons";

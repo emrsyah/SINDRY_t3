@@ -25,9 +25,9 @@ const Index: NextPage = () => {
     if (role === "admin") {
       router.push("/app/admin/beranda");
     } else if (role === "owner") {
-      router.push("/app/owner/beranda");
+      router.push(`/app/owner/${sessionData.user?.outlet_id}/beranda`);
     } else if (role === "cashier") {
-      router.push("/app/cashier/beranda");
+      router.push(`/app/cashier/${sessionData.user?.outlet_id}/beranda`);
     }
   }, [status]);
   // const {accessToken}  = sessionData
@@ -43,16 +43,11 @@ const Index: NextPage = () => {
     const email = data.email;
     const password = data.password;
     console.log(data);
-    const res = await signIn("credentials", {
+    await signIn("credentials", {
       email,
       password,
+      redirect: false
     });
-    console.log(res);
-    console.log(sessionData);
-    console.log(status);
-    if (res?.ok) {
-      console.log("berhasil");
-    }
   });
 
   return (
@@ -114,7 +109,7 @@ const Index: NextPage = () => {
                 Log In
               </button>
             </form>
-            <p className="mt-4 text-center text-sm font-medium">
+            {/* <p className="mt-4 text-center text-sm font-medium">
               Don`t have an account?{" "}
               <Link
                 href={"/signup"}
@@ -122,7 +117,7 @@ const Index: NextPage = () => {
               >
                 Sign up for free
               </Link>
-            </p>
+            </p> */}
           </div>
         </div>
         <div className="bg-gray-800 bg-pattern flex items-center justify-center relative overflow-hidden">

@@ -1,5 +1,5 @@
 import React from "react";
-import LayoutAdmin from "../../../../components/LayoutAdmin";
+import LayoutAdmin from "../../../../components/admin/LayoutAdmin";
 import type { NextPageWithLayout } from "../../../_app";
 import { trpc } from "../../../../utils/trpc";
 import { UilStoreAlt } from "@iconscout/react-unicons";

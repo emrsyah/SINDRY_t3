@@ -6,7 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import sha1 from "sha1";
 import { prisma } from "../../../server/db/client";
 import { trpc } from "../../../utils/trpc.js";
-import { Role } from '../../../types/next-auth';
+import { Role } from "../../../types/next-auth";
 
 export const authOptions: NextAuthOptions = {
   // Include user.id on session
@@ -15,7 +15,8 @@ export const authOptions: NextAuthOptions = {
       /* Step 1: update the token based on the user object */
       if (user) {
         token.role = user.role;
-        token.id = user.id
+        token.id = user.id;
+        token.outlet_id = user.outlet_id;
       }
       return token;
     },
@@ -23,7 +24,8 @@ export const authOptions: NextAuthOptions = {
       /* Step 2: update the session.user based on the token object */
       if (token && session.user) {
         session.user.role = token.role;
-        session.user.id = token.id
+        session.user.id = token.id;
+        session.user.outlet_id = token.outlet_id;
       }
       return session;
     },
@@ -48,6 +50,13 @@ export const authOptions: NextAuthOptions = {
       const isAllowedToSignIn = true;
       console.log({ user, account, profile, email, credentials });
       if (isAllowedToSignIn) {
+        // if (user.role === "admin") {
+        //   return "/app/admin/beranda";
+        // } else if (user.role === "owner") {
+        //   return `/app/owner/${user.outlet_id}/beranda`;
+        // } else if (user.role === "cashier") {
+        //   return `/app/cashier/${user.outlet_id}/beranda`;
+        // }
         return true;
       } else {
         // Return false to display a default error message
@@ -92,6 +101,7 @@ export const authOptions: NextAuthOptions = {
           email: user.email,
           image: user.image,
           role: user.role as Role,
+          outlet_id: user.outletsId,
         };
       },
     }),
