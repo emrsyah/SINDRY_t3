@@ -1,5 +1,4 @@
 import { useSession } from "next-auth/react";
-import { useState } from "react";
 import {
   UilEstate,
   UilClipboardNotes,
@@ -12,7 +11,8 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/router";
 import SidebarProfile from "../SidebarProfile";
-import type { WITResponse } from '../../dataStructure';
+import type { WITResponse } from "../../dataStructure";
+import { useForm } from "react-hook-form";
 
 const sidebarItems = [
   {
@@ -53,10 +53,16 @@ const getSidebarIcon = (name: string) => {
   else if (name == "Pengguna") return <UilUsersAlt size="20" />;
 };
 
+interface MessageProps {
+  message: string;
+}
+
 const SidebarAdmin = () => {
   const { data: sessionData, status } = useSession();
   const router = useRouter();
-  const [message, setMessage] = useState("");
+
+  const { setFocus, setValue, register, handleSubmit } =
+    useForm<MessageProps>();
   // console.log(sessionData?.expires)
 
   const extractLocation = () => {
@@ -69,10 +75,9 @@ const SidebarAdmin = () => {
     else if (ar[3] === "pengguna") return "Pengguna";
   };
 
-  const getWitResponse = async (ev: React.FormEvent<HTMLFormElement>) => {
-    ev.preventDefault()
-    const basePath = `/app/${sessionData?.user?.role}`
-    const q = encodeURIComponent(message);
+  const getWitResponse = handleSubmit(async (data) => {
+    const basePath = `/app/${sessionData?.user?.role}`;
+    const q = encodeURIComponent(data.message);
     const uri = "https://api.wit.ai/message?v=20230311&q=" + q;
     const auth = "Bearer " + process.env.NEXT_PUBLIC_WIT_CLIENT_KEY;
     try {
@@ -82,26 +87,46 @@ const SidebarAdmin = () => {
         },
       });
       const data: WITResponse = await response.json();
-      const witIntent = data.intents[0]?.name
-      console.log(witIntent)
-      const witOutletId = data.entities["outlet_id:outlet_id"] === undefined ? "no outlet" : data.entities["outlet_id:outlet_id"][0]?.value.includes("outlet") ? data.entities["outlet_id:outlet_id"][0]?.value.split(" ")[1] : data.entities["outlet_id:outlet_id"][0]?.value
-      if(witIntent === "tambah_pesanan"){
-        router.push(witOutletId === "no outlet" ? `${basePath}/orderan/select-outlet` :  `${basePath}/orderan/new/${witOutletId}`)
+      const witIntent = data.intents[0]?.name;
+      console.log(witIntent);
+      const witOutletId =
+        data.entities["outlet_id:outlet_id"] === undefined
+          ? "no outlet"
+          : data.entities["outlet_id:outlet_id"][0]?.value.includes("outlet")
+          ? data.entities["outlet_id:outlet_id"][0]?.value.split(" ")[1]
+          : data.entities["outlet_id:outlet_id"][0]?.value;
+      if (witIntent === "tambah_pesanan") {
+        router.push(
+          witOutletId === "no outlet"
+            ? `${basePath}/orderan/select-outlet`
+            : `${basePath}/orderan/new/${witOutletId}`
+        );
+      } else if (witIntent === "tambah_kustomer") {
+        router.push(
+          `${basePath}/pelanggan/new?oid=${
+            witOutletId === "no outlet" ? "" : witOutletId
+          }`
+        );
+      } else if (witIntent === "tambah_produk") {
+        router.push(
+          `${basePath}/produk/new?oid=${
+            witOutletId === "no outlet" ? "" : witOutletId
+          }`
+        );
+      } else if (witIntent === "tambah_outlet") {
+        router.push(`${basePath}/outlet/new`);
+      } else if (witIntent === "tambah_pengguna") {
+        router.push(
+          `${basePath}/pengguna/new?oid=${
+            witOutletId === "no outlet" ? "" : witOutletId
+          }`
+        );
       }
-      else if(witIntent === "tambah_kustomer"){
-        router.push(`${basePath}/pelanggan/new?oid=${witOutletId === "no outlet" ? "" : witOutletId}`)
-      }
-      else if(witIntent === "tambah_produk"){
-        router.push(`${basePath}/produk/new?oid=${witOutletId === "no outlet" ? "" : witOutletId}`)
-      }
-      else if(witIntent === "tambah_outlet"){
-        router.push(`${basePath}/outlet/new`)
-      }
-      setMessage("")
+      setValue("message", "");
     } catch (error) {
       console.error(error);
     }
-  };
+  });
 
   return (
     <nav className="sticky top-0 flex h-screen flex-col gap-4 border-r-[1.3px] bg-gray-50 p-6 pt-7">
@@ -167,10 +192,9 @@ const SidebarAdmin = () => {
         <h5 className="highlight text-sm font-semibold">Sindry AI - Beta</h5>
         <input
           type="text"
-          value={message}
-          onChange={(ev)=>setMessage(ev.target.value)}
+          {...register("message", { required: true })}
           className="input"
-          placeholder="Ask AI to do something"
+          placeholder="Ask something"
         />
       </form>
     </nav>
