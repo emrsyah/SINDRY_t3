@@ -175,3 +175,67 @@ export interface AddedProductProps extends ProductSelectFriendly{
 export interface AddedProductFromDatabaseProps extends AddedProductProps{
   isInitial: boolean;
 }
+export interface Entities2 {
+}
+
+export interface OutletIdOutletId {
+    body: string;
+    confidence: number;
+    end: number;
+    entities: Entities2;
+    id: string;
+    name: string;
+    role: string;
+    start: number;
+    type: string;
+    value: string;
+}
+
+export interface Entities {
+    "outlet_id:outlet_id": OutletIdOutletId[];
+}
+
+export interface Intent {
+    confidence: number;
+    id: string;
+    name: string;
+}
+
+export interface Traits {
+}
+
+export interface WITResponse {
+    entities: Entities;
+    intents: Intent[];
+    text: string;
+    traits: Traits;
+}
+
+
+// {
+//   "entities": {
+//       "outlet_id:outlet_id": [
+//           {
+//               "body": "outlet 1",
+//               "confidence": 0.9995,
+//               "end": 31,
+//               "entities": {},
+//               "id": "118584291174405",
+//               "name": "outlet_id",
+//               "role": "outlet_id",
+//               "start": 23,
+//               "type": "value",
+//               "value": "1"
+//           }
+//       ]
+//   },
+//   "intents": [
+//       {
+//           "confidence": 0.9983241081235299,
+//           "id": "5926126484171023",
+//           "name": "tambah_pesanan"
+//       }
+//   ],
+//   "text": "tambah pesanan baru di outlet 1",
+//   "traits": {}
+// }
