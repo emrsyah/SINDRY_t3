@@ -27,15 +27,15 @@ const LayoutCashier = ({ children }: Props) => {
 
   const sidebarItems = [
     {
-      path: `/app/cashier/${oid}/beranda`,
+      path: `/app/cashier/${oid as string}/beranda`,
       name: `Beranda`,
     },
     {
-      path: `/app/cashier/${oid}/orderan`,
+      path: `/app/cashier/${oid as string}/orderan`,
       name: `Orderan`,
     },
     {
-      path: `/app/cashier/${oid}/pelanggan`,
+      path: `/app/cashier/${oid as string}/pelanggan`,
       name: `Pelanggan`,
     },
   ];

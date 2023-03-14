@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, adminProcedure } from "../trpc";
 
 export const customerRouter = router({
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.customers.findMany({
       include: {
         outlets: true,
@@ -19,6 +19,13 @@ export const customerRouter = router({
       return ctx.prisma.customers.findMany({
         where: {
           outlet_id: input.id
+        },
+        include: {
+          outlets: {
+            select: {
+              name: true
+            }
+          }
         }
       });
     }),

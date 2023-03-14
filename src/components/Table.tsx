@@ -49,10 +49,7 @@ export default function Table({
   }, [filterInput]);
 
   const rowClickHandler = (id: number) => {
-    const curPath =
-      navigate.pathname.split("/")[navigate.pathname.split("/").length - 1];
-    navigate.push(`${curPath}/${id.toString()}`);
-    // console.log(id)
+    navigate.push(`/${navigate.asPath}/${id.toString()}`);
   };
 
   return (
