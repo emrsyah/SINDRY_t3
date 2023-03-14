@@ -21,16 +21,16 @@ import LayoutCashier from "../../../../../components/cashier/LayoutCashier";
 
 const PelangganDetail: NextPageWithLayout = () => {
   const router = useRouter();
-  const { pid } = router.query;
+  const { oid ,pid } = router.query;
 
   const breadItems = [
     {
       name: "Pelanggan",
-      path: `/app/admin/pelanggan`,
+      path: `/app/cashier/${oid}/pelanggan`,
     },
     {
       name: "Detail Pelanggan",
-      path: `/app/admin/pelanggan/${pid}`,
+      path: `/app/cashier/${oid}/pelanggan/${pid}`,
     },
   ];
 

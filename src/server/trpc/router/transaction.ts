@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, adminProcedure } from "../trpc";
 
 export const transactionRouter = router({
-  getAll: protectedProcedure.query(({ ctx }) => {
+  getAll: adminProcedure.query(({ ctx }) => {
     return ctx.prisma.transactions.findMany({
       include: {
         outlets: {
@@ -23,6 +23,36 @@ export const transactionRouter = router({
       },
     });
   }),
+  getByOutlet: protectedProcedure
+    .input(
+      z.object({
+        outlet_id: z.number(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.transactions.findMany({
+        where: {
+          outlet_id: input.outlet_id,
+        },
+        include: {
+          outlets: {
+            select: {
+              name: true,
+            },
+          },
+          customers: {
+            select: {
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+    }),
   getLast: protectedProcedure
     .input(
       z.object({
@@ -38,10 +68,10 @@ export const transactionRouter = router({
         include: {
           outlets: {
             select: {
-              name: true
-            }
-          }
-        }
+              name: true,
+            },
+          },
+        },
       });
     }),
   getById: protectedProcedure
