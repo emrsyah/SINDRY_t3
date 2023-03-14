@@ -1,9 +1,15 @@
+import type { ReactElement } from 'react';
 import React from 'react'
+import LayoutCashier from '../../../../components/cashier/LayoutCashier';
 
-const beranda = () => {
+const Beranda = () => {
   return (
-    <div>beranda</div>
+    <div>beranda kasir</div>
   )
 }
 
-export default beranda
+export default Beranda
+
+Beranda.getLayout = function getLayout(page: ReactElement) {
+  return <LayoutCashier>{page}</LayoutCashier>;
+};

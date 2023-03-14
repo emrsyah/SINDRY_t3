@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import SidebarProfile from "../SidebarProfile";
 import type { WITResponse } from "../../dataStructure";
 import { useForm } from "react-hook-form";
+import SidebarItem from "../SidebarItem";
 
 const sidebarItems = [
   {
@@ -58,22 +59,12 @@ interface MessageProps {
 }
 
 const SidebarAdmin = () => {
-  const { data: sessionData, status } = useSession();
+  const { data: sessionData } = useSession();
   const router = useRouter();
 
-  const { setFocus, setValue, register, handleSubmit } =
+  const {  setValue, register, handleSubmit } =
     useForm<MessageProps>();
   // console.log(sessionData?.expires)
-
-  const extractLocation = () => {
-    const ar = router.pathname.split("/");
-    if (ar[3] === "beranda") return "Beranda";
-    else if (ar[3] === "orderan") return "Orderan";
-    else if (ar[3] === "produk") return "Produk";
-    else if (ar[3] === "pelanggan") return "Pelanggan";
-    else if (ar[3] === "outlet") return "Outlet";
-    else if (ar[3] === "pengguna") return "Pengguna";
-  };
 
   const getWitResponse = handleSubmit(async (data) => {
     const basePath = `/app/${sessionData?.user?.role}`;
@@ -95,6 +86,7 @@ const SidebarAdmin = () => {
           : data.entities["outlet_id:outlet_id"][0]?.value.includes("outlet")
           ? data.entities["outlet_id:outlet_id"][0]?.value.split(" ")[1]
           : data.entities["outlet_id:outlet_id"][0]?.value;
+      console.log(witOutletId);
       if (witIntent === "tambah_pesanan") {
         router.push(
           witOutletId === "no outlet"
@@ -121,6 +113,12 @@ const SidebarAdmin = () => {
             witOutletId === "no outlet" ? "" : witOutletId
           }`
         );
+      } else if (witIntent === "cari_pesanan") {
+        router.push(
+          `${basePath}/orderan/?oid=${
+            witOutletId === "no outlet" ? "" : witOutletId
+          }`
+        );
       }
       setValue("message", "");
     } catch (error) {
@@ -143,49 +141,28 @@ const SidebarAdmin = () => {
       </Link>
       <div className="flex flex-grow flex-col gap-1">
         {sidebarItems.map((item, i) => (
-          <Link
-            href={item.path}
-            className={`flex items-center gap-3 rounded p-2 text-sm font-medium text-gray-500 hover:bg-gray-100 ${
-              extractLocation() === item.name
-                ? "bg-purple-100 !text-indigo-600 hover:bg-purple-100"
-                : ""
-            }`}
+          <SidebarItem
+            isAdmin={false}
+            item={item}
+            icon={getSidebarIcon(item.name)}
+            isActive={router.pathname
+              .toLowerCase()
+              .includes(item.name.toLowerCase())}
             key={i}
-          >
-            <div
-              className={`text-gray-500 
-            ${extractLocation() === item.name ? " !text-indigo-600" : ""}
-            `}
-            >
-              {getSidebarIcon(item.name)}
-            </div>
-            <p>{item.name}</p>
-          </Link>
+          />
         ))}
         <div className="my-2 h-[1px] w-full bg-gray-300"></div>
 
         {sidebarItemsAdmin.map((item, i) => (
-          <Link
-            href={item.path}
-            className={`flex items-center gap-3 rounded p-2 text-sm font-medium text-gray-500 hover:bg-gray-100 ${
-              extractLocation() === item.name
-                ? "bg-purple-100 !text-indigo-600 hover:bg-purple-100"
-                : ""
-            }`}
+          <SidebarItem
+            isAdmin={true}
+            item={item}
+            icon={getSidebarIcon(item.name)}
+            isActive={router.pathname
+              .toLowerCase()
+              .includes(item.name.toLowerCase())}
             key={i}
-          >
-            <div
-              className={`text-gray-500 
-            ${extractLocation() === item.name ? " !text-indigo-600" : ""}
-            `}
-            >
-              {getSidebarIcon(item.name)}
-            </div>
-            <p>{item.name}</p>
-            <p className="rounded bg-indigo-500 py-1 px-2 text-xs text-white">
-              Admin✨
-            </p>
-          </Link>
+          />
         ))}
       </div>
       <form onSubmit={getWitResponse}>

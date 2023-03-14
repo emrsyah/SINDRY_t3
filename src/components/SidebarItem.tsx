@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
-interface itemProps {
+export interface sidebarItemProps {
   path: string;
   name: string;
 }
@@ -11,7 +11,7 @@ const SidebarItem = ({
   isActive,
   isAdmin = false,
 }: {
-  item: itemProps;
+  item: sidebarItemProps;
   icon: JSX.Element | undefined;
   isActive: boolean;
   isAdmin: boolean;
