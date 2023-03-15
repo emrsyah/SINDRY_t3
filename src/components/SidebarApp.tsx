@@ -1,7 +1,5 @@
 import { useSession } from "next-auth/react";
-import {
-  UilPlus,
-} from "@iconscout/react-unicons";
+import { UilPlus } from "@iconscout/react-unicons";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -14,9 +12,16 @@ interface MessageProps {
   message: string;
 }
 
-const SidebarApp = ({ items, iconGetter }: {items: sidebarItemProps[], iconGetter: (name: string) => JSX.Element | undefined}) => {
+const SidebarApp = ({
+  items,
+  iconGetter,
+}: {
+  items: sidebarItemProps[];
+  iconGetter: (name: string) => JSX.Element | undefined;
+}) => {
   const { data: sessionData } = useSession();
   const router = useRouter();
+  const { oid } = router.query;
 
   const { setValue, register, handleSubmit } = useForm<MessageProps>();
   // console.log(sessionData?.expires)
@@ -34,45 +39,19 @@ const SidebarApp = ({ items, iconGetter }: {items: sidebarItemProps[], iconGette
       });
       const data: WITResponse = await response.json();
       const witIntent = data.intents[0]?.name;
-      console.log(witIntent);
-      const witOutletId =
-        data.entities["outlet_id:outlet_id"] === undefined
-          ? "no outlet"
-          : data.entities["outlet_id:outlet_id"][0]?.value.includes("outlet")
-          ? data.entities["outlet_id:outlet_id"][0]?.value.split(" ")[1]
-          : data.entities["outlet_id:outlet_id"][0]?.value;
+      // const witOutletId =
+      //   data.entities["outlet_id:outlet_id"] === undefined
+      //     ? "no outlet"
+      //     : data.entities["outlet_id:outlet_id"][0]?.value.includes("outlet")
+      //     ? data.entities["outlet_id:outlet_id"][0]?.value.split(" ")[1]
+      //     : data.entities["outlet_id:outlet_id"][0]?.value;
       if (witIntent === "tambah_pesanan") {
-        router.push(
-          witOutletId === "no outlet"
-            ? `${basePath}/orderan/select-outlet`
-            : `${basePath}/orderan/new/${witOutletId}`
-        );
+        router.push(`/${basePath}/${oid}/orderan/new`);
+        // console.log(basePath)
       } else if (witIntent === "tambah_kustomer") {
-        router.push(
-          `${basePath}/pelanggan/new?oid=${
-            witOutletId === "no outlet" ? "" : witOutletId
-          }`
-        );
-      } else if (witIntent === "tambah_produk") {
-        router.push(
-          `${basePath}/produk/new?oid=${
-            witOutletId === "no outlet" ? "" : witOutletId
-          }`
-        );
-      } else if (witIntent === "tambah_outlet") {
-        router.push(`${basePath}/outlet/new`);
-      } else if (witIntent === "tambah_pengguna") {
-        router.push(
-          `${basePath}/pengguna/new?oid=${
-            witOutletId === "no outlet" ? "" : witOutletId
-          }`
-        );
+        router.push(`/${basePath}/${oid}/pelanggan/new`);
       } else if (witIntent === "cari_pesanan") {
-        router.push(
-          `${basePath}/orderan/?oid=${
-            witOutletId === "no outlet" ? "" : witOutletId
-          }`
-        );
+        router.push(`/${basePath}/${oid}/orderan`);
       }
       setValue("message", "");
     } catch (error) {
@@ -88,7 +67,7 @@ const SidebarApp = ({ items, iconGetter }: {items: sidebarItemProps[], iconGette
       />
       <Link
         href={"orderan/new"}
-        as={`${router.asPath}/new`}
+        as={`/app/cashier/${oid}/orderan/new`}
         className="btn-primary flex items-center justify-center gap-1 rounded-md"
       >
         Buat Transaksi
