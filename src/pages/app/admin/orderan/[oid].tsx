@@ -261,8 +261,8 @@ const OrderanDetail: NextPageWithLayout = () => {
                     <p className="text-gray-600">Nama</p>
                     <Link
                       href={getChangePath(
-                        "user",
-                        transactions?.outlet_id.toString() as string
+                        "pengguna",
+                        transactions?.user.id.toString() as string
                       )}
                       className="link font-medium"
                     >

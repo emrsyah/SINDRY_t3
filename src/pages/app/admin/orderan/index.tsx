@@ -2,27 +2,40 @@ import React, { useState, useMemo } from "react";
 import LayoutAdmin from "../../../../components/admin/LayoutAdmin";
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "../../../_app";
-import { UilPlus, UilTimesCircle, UilCheckCircle } from "@iconscout/react-unicons";
+import { UilPlus, UilImport } from "@iconscout/react-unicons";
 import { trpc } from "../../../../utils/trpc";
 import dayjs from "dayjs";
 import Table from "../../../../components/Table";
 import EmptyTable from "../../../../components/EmptyTable";
 import Link from "next/link";
 import rupiahConverter from "../../../../helpers/rupiahConverter";
-import transactionStatusConverter from "../../../../helpers/transactionStatusConverter";
 import PaidStatus from "../../../../components/PaidStatus";
 import ProductType from "../../../../components/ProductTypeStatus";
+import { CSVLink } from "react-csv";
+import getHeaderCsv from "../../../../helpers/getHeaderCsv";
 
 const Index: NextPageWithLayout = () => {
   const [filterInput, setFilterInput] = useState<string>("");
+  const [csvHeader, setCsvHeader] = useState<string[]>([]);
 
-  const { data, isLoading, isError } = trpc.transaction.getAll.useQuery();
+  const { data, isLoading, isError } = trpc.transaction.getAll.useQuery(
+    undefined,
+    {
+      onSuccess: (data) => {
+        // const tmpTransformedCsv = data.map((val, idx) => {
+        //   return {
+        //     label: val.,
+        //     key: val.id,
+        //   };
+        // });
+      },
+    }
+  );
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value || "";
     setFilterInput(value);
   };
-
 
   const columns = useMemo(
     () => [
@@ -46,9 +59,11 @@ const Index: NextPageWithLayout = () => {
       {
         Header: "Status",
         accessor: "status",
-        Cell: ({ cell: { value } }: { cell: { value: "on_process" | "finished" | "picked_up" | "new" } }) => (
-          <ProductType status={value} />
-        ),
+        Cell: ({
+          cell: { value },
+        }: {
+          cell: { value: "on_process" | "finished" | "picked_up" | "new" };
+        }) => <ProductType status={value} />,
       },
       {
         Header: "Pelanggan",
@@ -68,7 +83,7 @@ const Index: NextPageWithLayout = () => {
         Header: "Outlet",
         accessor: "outlets.name",
         Cell: ({ cell: { value } }: { cell: { value: number } }) => (
-          <span className="font-semibold text-indigo-500">{(value)}</span>
+          <span className="font-semibold text-indigo-500">{value}</span>
         ),
       },
       {
@@ -85,10 +100,10 @@ const Index: NextPageWithLayout = () => {
   return (
     <div>
       <div className="flex w-full items-center justify-between gap-1">
-        <h3 className="text-lg raleway font-extrabold text-indigo-800">
+        <h3 className="raleway text-lg font-extrabold text-indigo-800">
           Atur Orderan{" "}
           <span className="text-base font-medium text-gray-500">
-          ({data?.length ? data.length : 0})
+            ({data?.length ? data.length : 0})
           </span>
         </h3>
         <Link
@@ -99,13 +114,27 @@ const Index: NextPageWithLayout = () => {
         </Link>
       </div>
       <div className="my-3">
-        <input
-          type="text"
-          placeholder="Cari Dengan Nama"
-          onChange={handleFilterChange}
-          value={filterInput}
-          className="input mt-4 mb-2 w-full border-gray-300 text-sm focus:border-indigo-500"
-        />
+        <div className="mt-4  mb-2 flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Cari Dengan Nama"
+            onChange={handleFilterChange}
+            value={filterInput}
+            className="input  flex-grow border-gray-300 text-sm focus:border-indigo-500"
+          />
+          {isLoading ? (
+            <UilImport size="18" />
+          ) : (
+            <CSVLink
+              data={data}
+              headers={getHeaderCsv(columns)}
+              filename={`Laporan Orderan Laundry | Admin | ${dayjs().format("MMM DD YYYY")}`}
+              className="btn-secondary h-fit rounded py-2 px-3 font-medium"
+            >
+              <UilImport size="18" />
+            </CSVLink>
+          )}
+        </div>
         {isLoading ? (
           <EmptyTable status="loading" columns={columns} />
         ) : data?.length ? (

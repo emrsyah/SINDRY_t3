@@ -138,6 +138,7 @@ export const transactionRouter = router({
           },
           user: {
             select: {
+              id: true,
               name: true,
               email: true,
             },
