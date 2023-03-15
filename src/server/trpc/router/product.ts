@@ -50,8 +50,46 @@ export const productRouter = router({
       },
     });
   }),
+  getMostSoldByOutlet: protectedProcedure.input(z.object({
+    outlet_id: z.number()
+  })).query(({ ctx, input }) => {
+    return ctx.prisma.products.findMany({
+      orderBy: {
+        sold: "desc",
+      },
+      where: {
+        outlet_id: input.outlet_id
+      },
+      take: 5,
+      include: {
+        outlets: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+  }),
   getGroupByCategory: protectedProcedure.query(({ctx}) =>{
     return ctx.prisma.products.groupBy({
+      by: ["type"],
+      _sum: {
+        sold: true,
+      },
+      orderBy: {
+        _sum: {
+          sold: "desc"
+        }
+      }
+    })
+  }),
+  getGroupByCategoryPerOutlet: protectedProcedure.input(z.object({
+    outlet_id: z.number()
+  })).query(({ctx, input}) =>{
+    return ctx.prisma.products.groupBy({
+      where: {
+        outlet_id: input.outlet_id
+      },
       by: ["type"],
       _sum: {
         sold: true,

@@ -86,7 +86,6 @@ const SidebarAdmin = () => {
           : data.entities["outlet_id:outlet_id"][0]?.value.includes("outlet")
           ? data.entities["outlet_id:outlet_id"][0]?.value.split(" ")[1]
           : data.entities["outlet_id:outlet_id"][0]?.value;
-      console.log(witOutletId);
       if (witIntent === "tambah_pesanan") {
         router.push(
           witOutletId === "no outlet"

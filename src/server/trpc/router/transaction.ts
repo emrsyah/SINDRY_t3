@@ -74,6 +74,44 @@ export const transactionRouter = router({
         },
       });
     }),
+  getLastByOutlet: protectedProcedure
+    .input(
+      z.object({
+        outlet_id: z.number(),
+        limit: z.number(),
+      })
+    )
+    .query(({ ctx, input }) => {
+      return ctx.prisma.transactions.findMany({
+        orderBy: {
+          created_at: "desc",
+        },
+        where:{
+          outlet_id: input.outlet_id
+        },
+        take: input.limit,
+        include: {
+          outlets: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      });
+    }),
+  getPerStatus: protectedProcedure.input(z.object({
+    outlet_id: z.number()
+  })).query(({ctx, input}) => {
+    return ctx.prisma.transactions.groupBy({
+      by: ["status"],
+      where: {
+        outlet_id: input.outlet_id
+      },
+      _count: {
+        id: true
+      }
+    })
+  }),
   getById: protectedProcedure
     .input(
       z.object({
@@ -274,6 +312,22 @@ export const transactionRouter = router({
         total: true,
       },
       _count: true,
+    });
+  }),
+  getSalesStatisticsByOutlet: protectedProcedure.input(z.object({
+    outlet_id: z.number()
+  })).query(({ ctx, input }) => {
+    return ctx.prisma.transactions.aggregate({
+      _sum: {
+        total: true,
+      },
+      _avg: {
+        total: true,
+      },
+      _count: true,
+      where: {
+        outlet_id: input.outlet_id
+      }
     });
   }),
 });

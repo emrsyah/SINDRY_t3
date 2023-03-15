@@ -87,7 +87,8 @@ const SidebarApp = ({ items, iconGetter }: {items: sidebarItemProps[], iconGette
         role={sessionData?.user?.role as "admin" | "owner" | "cashier"}
       />
       <Link
-        href={"orderan/select-outlet"}
+        href={"orderan/new"}
+        as={`${router.asPath}/new`}
         className="btn-primary flex items-center justify-center gap-1 rounded-md"
       >
         Buat Transaksi

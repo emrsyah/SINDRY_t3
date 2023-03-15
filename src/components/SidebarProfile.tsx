@@ -22,7 +22,7 @@ function SidebarProfile({
           className="rounded-full"
         />
         <div className="flex flex-col items-start">
-          <h5 className="text-sm font-semibold">{email}</h5>
+          <h5 className="text-sm font-semibold truncate">{email}</h5>
           <p className="text-xs font-medium text-gray-400">{role}</p>
         </div>
       </Menu.Button>
