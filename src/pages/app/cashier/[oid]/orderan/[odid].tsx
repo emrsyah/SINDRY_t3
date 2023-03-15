@@ -1,14 +1,10 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import type { ReactElement } from "react";
-import { useEffect } from "react";
 import type { NextPageWithLayout } from "../../../../_app";
-import { trpc } from "../../../../../utils/trpc";
-import { useForm } from "react-hook-form";
-import type { Outlet, ProductType, Product } from "../../../../../dataStructure";
-import { productTypeOptions } from "../../../../../dataStructure";
+import type { RouterOutputs } from '../../../../../utils/trpc';
+import { trpc } from '../../../../../utils/trpc';
 import dayjs from "dayjs";
-import { toast } from "react-toastify";
 import { UilEditAlt } from "@iconscout/react-unicons";
 import DeleteConfirmationModal from "../../../../../components/DeleteConfirmationModal";
 import BreadCrumbs from "../../../../../components/BreadCrumbs";
@@ -20,11 +16,8 @@ import Link from "next/link";
 import TransactionMoreButton from "../../../../../components/TransactionMoreButton";
 import LayoutCashier from "../../../../../components/cashier/LayoutCashier";
 
-interface OutletSelectFriendly extends Outlet {
-  value: number;
-  label: string;
-}
 
+type TxnProps = RouterOutputs["transaction"]["getById"]
 const OrderanDetail: NextPageWithLayout = () => {
   const router = useRouter();
   const { odid, oid } = router.query;
@@ -40,12 +33,6 @@ const OrderanDetail: NextPageWithLayout = () => {
     },
   ];
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    formState: { errors },
-  } = useForm<Product>();
 
   const getChangePath = (newPath: string, newId: string) => {
     return router.asPath
@@ -53,59 +40,13 @@ const OrderanDetail: NextPageWithLayout = () => {
       .replace(odid as string, newId);
   };
 
-  const [selectedType, setSelectedType] = useState<ProductType>();
-  const [selectedOutlet, setSelectedOutlet] = useState<OutletSelectFriendly>();
-  const [outlets, setOutlets] = useState<OutletSelectFriendly[]>([]);
 
-  const { data, isLoading, isError } = trpc.product.getById.useQuery(
-    {
-      id: parseInt(odid as string),
-    },
-    {
-      onSuccess: (data) => {
-        setValue("name", data?.name as string);
-        setValue("price", data?.price as number);
-        const localSelectedType = productTypeOptions.find(
-          (d) => d.value === data?.type
-        );
-        setSelectedType(localSelectedType as ProductType);
-      },
-      onError: (err) => {
-        toast.error("Terjadi Kesalahan");
-        console.error(err);
-        router.back();
-      },
-    }
-  );
-
-  const {
-    data: outletsD,
-    isLoading: loadingOutlets,
-    isError: errorOutlets,
-  } = trpc.outlet.getAll.useQuery(undefined, {
-    onSuccess: (dataP) => {
-      const dataSelectFriendly = dataP.map((d) => {
-        return {
-          ...d,
-          value: d.id,
-          label: d.name,
-        };
-      });
-      setOutlets(dataSelectFriendly as OutletSelectFriendly[]);
-    },
-  });
 
   const { data: transactions, isLoading: loadingTxn } =
     trpc.transaction.getById.useQuery({
       id: parseInt(odid as string),
     });
   //   console.log(transactions);
-
-  useEffect(() => {
-    if (isLoading || loadingOutlets) return;
-    const localSelectedOutlet = outlets.find((d) => d.id === data?.outlet_id);
-    setSelectedOutlet(localSelectedOutlet);
-  }, [selectedType, outlets]);
 
   return (
     <>
@@ -130,7 +71,7 @@ const OrderanDetail: NextPageWithLayout = () => {
               >
                 Edit Pesanan <UilEditAlt size="20" />
               </Link>
-              <TransactionMoreButton setIsOpen={setIsOpen} />
+              <TransactionMoreButton  transaction={transactions as TxnProps}setIsOpen={setIsOpen} />
             </div>
           </div>
           <div className="my-6 flex flex-col gap-3">
