@@ -144,7 +144,8 @@ const SidebarAdmin = () => {
             isAdmin={false}
             item={item}
             icon={getSidebarIcon(item.name)}
-            isActive={router.pathname
+            isActive={(router.pathname.includes("select-outlet") && item.name === "Outlet") ? false :
+             router.pathname
               .toLowerCase()
               .includes(item.name.toLowerCase())}
             key={i}

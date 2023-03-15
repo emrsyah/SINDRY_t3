@@ -283,10 +283,10 @@ const OrderanDetail: NextPageWithLayout = () => {
                       {d.products.name.substring(0, 2)}
                     </div>
                     <div className="flex flex-col">
-                      <h5 className="font-medium">
-                        {d.products.name}
-                      </h5>
-                      <p className="text-xs font-medium text-indigo-500">{rupiahConverter(d.products.price)}</p>
+                      <h5 className="font-medium">{d.products.name}</h5>
+                      <p className="text-xs font-medium text-indigo-500">
+                        {rupiahConverter(d.products.price)}
+                      </p>
                     </div>
                   </div>
                   <h5 className="col-span-1 flex items-center justify-center font-semibold text-gray-500">

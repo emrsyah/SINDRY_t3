@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import type { ReactElement } from "react";
 import type { NextPageWithLayout } from "../../../../_app";
-import { UilPlus } from "@iconscout/react-unicons";
+import { UilPlus, UilImport } from "@iconscout/react-unicons";
 import { trpc } from "../../../../../utils/trpc";
 import dayjs from "dayjs";
 import Table from "../../../../../components/Table";
@@ -12,6 +12,8 @@ import PaidStatus from "../../../../../components/PaidStatus";
 import ProductType from "../../../../../components/ProductTypeStatus";
 import LayoutCashier from "../../../../../components/cashier/LayoutCashier";
 import { useRouter } from "next/router";
+import getHeaderCsv from '../../../../../helpers/getHeaderCsv';
+import { CSVLink } from 'react-csv';
 
 const Index: NextPageWithLayout = () => {
   const [filterInput, setFilterInput] = useState<string>("");
@@ -42,9 +44,6 @@ const Index: NextPageWithLayout = () => {
         Cell: ({ cell: { value } }: { cell: { value: Date } }) => (
           <>{dayjs(value).format("DD MMM")}</>
         ),
-        // Cell: ({ cell: { value } }: { cell: { value: "kiloan" | "bed_cover" | "selimut" | "kaos" | "lainnya" } }) => (
-        //   <span className={`${value === "bed_cover" ? "bcType" : value === "kaos" ? "kType" : value === "kiloan" ? "klType" : value === "selimut" ? "sType" : "lType"}`}>{(value)}</span>
-        // ),
       },
       {
         Header: "Status",
@@ -105,13 +104,29 @@ const Index: NextPageWithLayout = () => {
         </Link>
       </div>
       <div className="my-3">
-        <input
-          type="text"
-          placeholder="Cari Dengan Nama"
-          onChange={handleFilterChange}
-          value={filterInput}
-          className="input mt-4 mb-2 w-full border-gray-300 text-sm focus:border-indigo-500"
-        />
+        <div className="mt-4  mb-2 flex items-center gap-2">
+          <input
+            type="text"
+            placeholder="Cari Dengan Nama"
+            onChange={handleFilterChange}
+            value={filterInput}
+            className="input  flex-grow border-gray-300 text-sm focus:border-indigo-500"
+          />
+          {isLoading ? (
+            <UilImport size="18" />
+          ) : (
+            <CSVLink
+              data={data}
+              headers={getHeaderCsv(columns)}
+              filename={`Laporan Orderan Laundry | Kasir | ${dayjs().format(
+                "MMM DD YYYY"
+              )}`}
+              className="btn-secondary h-fit rounded py-2 px-3 font-medium"
+            >
+              <UilImport size="18" />
+            </CSVLink>
+          )}
+        </div>
         {isLoading ? (
           <EmptyTable status="loading" columns={columns} />
         ) : data?.length ? (

@@ -14,17 +14,19 @@ const Beranda: NextPageWithLayout = () => {
       limit: 5,
     });
   const { data: topProduct } = trpc.product.getMostSold.useQuery();
-  const { data: topPerOutlet, isLoading: loadingTopPerOutlet } = trpc.outlet.getTopSales.useQuery();
-  const {data: productPerGroup, isLoading: loadingProductPerGroup} = trpc.product.getGroupByCategory.useQuery(undefined, {
-    select: (data) => {
-      return data.map((d) => {
-        return {
-          total_sales: d._sum.sold,
-          name: d.type
-        }
-      }) 
-    }
-  });
+  const { data: topPerOutlet, isLoading: loadingTopPerOutlet } =
+    trpc.outlet.getTopSales.useQuery();
+  const { data: productPerGroup, isLoading: loadingProductPerGroup } =
+    trpc.product.getGroupByCategory.useQuery(undefined, {
+      select: (data) => {
+        return data.map((d) => {
+          return {
+            total_sales: d._sum.sold,
+            name: d.type,
+          };
+        });
+      },
+    });
 
   return (
     <div>
@@ -93,7 +95,7 @@ const Beranda: NextPageWithLayout = () => {
             Produk Favorit
           </h3>
           {topProduct?.map((d, i) => (
-            <div key={d.id} className="grid grid-cols-9 gap-2">
+            <div key={d.id} className="grid grid-cols-10 gap-2">
               <div className="col-span-7 flex gap-2">
                 <p className="col-span-1 font-medium text-gray-500">
                   {i >= 3
@@ -105,14 +107,16 @@ const Beranda: NextPageWithLayout = () => {
                     : "🥉"}
                 </p>
                 <span className="font-medium text-gray-400">|</span>
-                <h5 className="col-span-6 font-medium truncate text-gray-900">
+                <h5 className="col-span-6 truncate font-medium text-gray-900">
                   {d.name}
                 </h5>
               </div>
-              <p className="col-span-2 text-xs text-gray-500">
-                Terjual{" "}
-                <span className="font-medium text-gray-700">{d.sold}</span>
-              </p>
+              <div className="col-span-3 flex justify-end items-end">
+                <p className="text-xs text-gray-500">
+                  Terjual{" "}
+                  <span className="font-medium text-gray-700">{d.sold}</span>
+                </p>
+              </div>
             </div>
           ))}
         </div>
@@ -122,11 +126,11 @@ const Beranda: NextPageWithLayout = () => {
               <span className="text-lg">🏪</span>
               Penjualan Per Outlet
             </h3>
-            <div className="w-96 h-96">
+            <div className="h-96 w-96">
               {loadingTopPerOutlet ? (
                 <div>Loading...</div>
               ) : (
-              <PieChart dataP={topPerOutlet} />
+                <PieChart dataP={topPerOutlet} />
               )}
             </div>
           </div>
@@ -135,11 +139,11 @@ const Beranda: NextPageWithLayout = () => {
               <span className="text-lg">🧺</span>
               Penjualan Per Paket
             </h3>
-            <div className="w-96 h-96">
-            {loadingProductPerGroup ? (
+            <div className="h-96 w-96">
+              {loadingProductPerGroup ? (
                 <div>Loading...</div>
               ) : (
-              <PieChart dataP={productPerGroup} />
+                <PieChart dataP={productPerGroup} />
               )}
             </div>
           </div>
