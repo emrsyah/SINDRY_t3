@@ -4,6 +4,7 @@ import { UilExclamationTriangle, UilTimes } from "@iconscout/react-unicons";
 import { trpc } from "../utils/trpc";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 function DeleteConfirmationModal({
   id,
@@ -16,13 +17,16 @@ function DeleteConfirmationModal({
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   type: string;
 }) {
+  const { data: sessionData } = useSession();
   const router = useRouter();
+  const {oid} = router.query
 
   // * Delete Mutation
   const deleteOutlet = trpc.outlet.delete.useMutation({
     onSuccess: () => {
+      const basePath = `/app/${sessionData?.user?.role}`;
       toast.info("Berhasil Menghapus Data", { autoClose: 1000 });
-      router.push(`/app/admin/${type}`);
+      router.push(`/${basePath}/${oid}/${type}`);
     },
     onError: () => {
       toast.error("Gagal Menghapus Data", { autoClose: 1000 });
@@ -31,8 +35,9 @@ function DeleteConfirmationModal({
 
   const deleteCustomer = trpc.customer.delete.useMutation({
     onSuccess: () => {
+      const basePath = `/app/${sessionData?.user?.role}`;
       toast.info("Berhasil Menghapus Data", { autoClose: 1000 });
-      router.push(`/app/admin/${type}`);
+      router.push(`/${basePath}/${oid}/${type}`);
     },
     onError: () => {
       toast.error("Gagal Menghapus Data", { autoClose: 1000 });
@@ -41,8 +46,9 @@ function DeleteConfirmationModal({
 
   const deleteProduct = trpc.product.delete.useMutation({
     onSuccess: () => {
+      const basePath = `/app/${sessionData?.user?.role}`;
       toast.info("Berhasil Menghapus Data", { autoClose: 1000 });
-      router.push(`/app/admin/${type}`);
+      router.push(`/${basePath}/${oid}/${type}`);
     },
     onError: () => {
       toast.error("Gagal Menghapus Data", { autoClose: 1000 });
@@ -51,8 +57,9 @@ function DeleteConfirmationModal({
 
   const deleteTransaction = trpc.transaction.delete.useMutation({
     onSuccess: () => {
+      const basePath = `/app/${sessionData?.user?.role}`;
       toast.info("Berhasil Menghapus Data", { autoClose: 1000 });
-      router.push(`/app/admin/${type}`);
+      router.push(`/${basePath}/${oid}/${type}`);
     },
     onError: () => {
       toast.error("Gagal Menghapus Data", { autoClose: 1000 });
@@ -61,8 +68,9 @@ function DeleteConfirmationModal({
 
   const deleteUser = trpc.user.delete.useMutation({
     onSuccess: () => {
+      const basePath = `/app/${sessionData?.user?.role}`;
       toast.info("Berhasil Menghapus Data", { autoClose: 1000 });
-      router.push(`/app/admin/${type}`);
+      router.push(`/${basePath}/${oid}/${type}`);
     },
     onError: () => {
       toast.error("Gagal Menghapus Data", { autoClose: 1000 });
@@ -88,7 +96,7 @@ function DeleteConfirmationModal({
         id: id,
       });
     } else if (type === "pengguna") {
-      const strId = id.toString()
+      const strId = id.toString();
       deleteUser.mutate({
         id: strId,
       });
