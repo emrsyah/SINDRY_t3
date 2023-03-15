@@ -2,8 +2,11 @@ import { Menu } from "@headlessui/react";
 import React from "react";
 import { UilEllipsisV, UilTrashAlt, UilPrint } from "@iconscout/react-unicons";
 import TxnInvoice from "./TxnInvoice";
+import type { RouterOutputs } from '../utils/trpc';
 
-function TransactionMoreButton({setIsOpen} : {setIsOpen: React.Dispatch<React.SetStateAction<boolean>>}) {
+type TxnProps = RouterOutputs["transaction"]["getById"]
+function TransactionMoreButton({setIsOpen, transaction} : {setIsOpen: React.Dispatch<React.SetStateAction<boolean>>, transaction: TxnProps}) {
+  console.log(transaction)
   return (
     <Menu className="relative" as="div">
       <Menu.Button className="btn-secondary gap-2 rounded p-2">
@@ -20,7 +23,7 @@ function TransactionMoreButton({setIsOpen} : {setIsOpen: React.Dispatch<React.Se
             >
               {/* <UilPrint size="18" />
               <p className="font-medium">Cetak Struk</p> */}
-              <TxnInvoice />
+              <TxnInvoice transaction={transaction} />
             </button>
           )}
         </Menu.Item>

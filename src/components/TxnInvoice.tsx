@@ -2,6 +2,8 @@ import html2pdf from "html2pdf.js/dist/html2pdf.min";
 import ReactDOMServer from "react-dom/server";
 import rupiahConverter from "../helpers/rupiahConverter";
 import { UilPrint } from "@iconscout/react-unicons";
+import type { RouterOutputs } from "../utils/trpc";
+import dayjs from 'dayjs';
 
 const Icon = () => (
   <svg
@@ -47,27 +49,31 @@ const Icon = () => (
   </svg>
 );
 
-function TxnInvoice() {
+type TxnProps = RouterOutputs["transaction"]["getById"];
+function TxnInvoice({ transaction }: { transaction: TxnProps }) {
+  console.log(transaction);
   const fromData = [
     {
       label: "Nama Outlet",
-      value: "Pusat Bubats",
+      value: transaction?.outlets.name,
     },
     {
       label: "Nama Kasir",
-      value: "Muhammad Emirsyah",
+      value: transaction?.user.name,
     },
     {
       label: "Tanggal Pemesanan",
-      value: "12 Maret 2023",
+    //   value: "12 Maret 2023",
+      value:  dayjs(transaction?.created_at).format("DD MMM YYYY"),
     },
     {
       label: "Kode Pesanan",
-      value: "ID-AL432B89UB9",
+      value: transaction?.invoice_code,
     },
     {
       label: "Dicetak Pada Tanggal",
-      value: "15 Maret 2023 - 22:25:00",
+    //   value: "15 Maret 2023 - 22:25:00",
+      value: dayjs().format("DD MMM YYYY - HH:mm:ss"),
     },
   ];
   const productData = [
@@ -90,23 +96,23 @@ function TxnInvoice() {
   const finalData = [
     {
       label: "Sub-Total",
-      value: 120000,
+      value: transaction?.sub_total,
     },
     {
       label: "Diskon",
-      value: 10,
+      value: transaction?.discount,
     },
     {
       label: "Pajak",
-      value: 0,
+      value: transaction?.taxes,
     },
     {
       label: "Biaya Tambahan",
-      value: 0,
+      value: transaction?.additional_cost,
     },
     {
       label: "Total Akhir",
-      value: 108000,
+      value: transaction?.total,
     },
   ];
   const PdfJSX = () => {
@@ -120,7 +126,7 @@ function TxnInvoice() {
             </div>
             <div className="flex flex-col">
               <h3 className="text-xl font-bold">Sindry</h3>
-              <h5>{"ID-AL432B89UB9"}</h5>
+              <h5>{transaction?.invoice_code}</h5>
             </div>
           </div>
           <div className="my-8 h-[1px] w-full border-b-[1.5px] border-dotted border-gray-400 bg-transparent"></div>
@@ -144,15 +150,15 @@ function TxnInvoice() {
               <div className="col-span-2 text-end">Price</div>
               <div className="col-span-2 text-end">Total</div>
             </div>
-            {productData.map((d, i) => (
+            {transaction?.transaction_details.map((d, i) => (
               <div className="grid grid-cols-9 font-medium" key={i}>
-                <div className="col-span-4">{d.name}</div>
-                <div className="col-span-1 text-center">{d.qty}</div>
+                <div className="col-span-4">{d.products.name}</div>
+                <div className="col-span-1 text-center">{d.quantity}</div>
                 <div className="col-span-2 text-end">
-                  {rupiahConverter(d.price)}
+                  {rupiahConverter(d.products.price)}
                 </div>
                 <div className="col-span-2 text-end">
-                  {rupiahConverter(d.price * d.qty)}
+                  {rupiahConverter(d.products.price * d.quantity)}
                 </div>
               </div>
             ))}
