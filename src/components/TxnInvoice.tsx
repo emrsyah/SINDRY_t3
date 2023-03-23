@@ -51,7 +51,6 @@ const Icon = () => (
 
 type TxnProps = RouterOutputs["transaction"]["getById"];
 function TxnInvoice({ transaction }: { transaction: TxnProps }) {
-  console.log(transaction);
   const fromData = [
     {
       label: "Nama Outlet",
@@ -76,23 +75,7 @@ function TxnInvoice({ transaction }: { transaction: TxnProps }) {
       value: dayjs().format("DD MMM YYYY - HH:mm:ss"),
     },
   ];
-  const productData = [
-    {
-      name: "Cuci Kiloan Satu",
-      qty: 3,
-      price: 8000,
-    },
-    {
-      name: "Cuci Sepatu Super",
-      qty: 2,
-      price: 32000,
-    },
-    {
-      name: "Paket Kilat Lengkap",
-      qty: 1,
-      price: 40000,
-    },
-  ];
+
   const finalData = [
     {
       label: "Sub-Total",

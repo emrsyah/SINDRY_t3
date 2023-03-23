@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import sindryLogo from '../../public/sindry-dos.svg'
 import Image from "next/image";
+import { toast } from 'react-toastify';
 
 type userProps = {
   email: string;
@@ -43,11 +44,15 @@ const Index: NextPage = () => {
     const email = data.email;
     const password = data.password;
     console.log(data);
-    await signIn("credentials", {
+    const res = await signIn("credentials", {
       email,
       password,
       redirect: false
     });
+    if(!res?.ok){
+      toast.error("Email atau password salah", {autoClose: 1500})
+    }
+    // console.log()
   });
 
   return (

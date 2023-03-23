@@ -1,7 +1,6 @@
 import { router } from "../trpc";
 import { authRouter } from "./auth";
 import { customerRouter } from "./customer";
-import { exampleRouter } from "./example";
 import { outletRouter } from "./outlet";
 import { productRouter } from './product';
 import { transactionRouter } from './transaction';

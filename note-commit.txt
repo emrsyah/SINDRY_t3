@@ -7,3 +7,26 @@ CATATAN PER COMMIT:
 3. Nanti fix query outlet di customer detail, masih ada bug si fetch outlet duluan yg selesai jadi gak ada yg di select.
 
 4. Masih ada bug di bagian delete user
+
+CREATE TRIGGER transaction_before_delete
+BEFORE DELETE ON transactions
+FOR EACH ROW
+BEGIN
+  -- Store the related transaction_detail rows in a temporary table
+  CREATE TEMPORARY TABLE temp_transaction_detail
+  SELECT *
+  FROM transaction_details
+  WHERE transaction_id = OLD.id;
+
+  -- Delete the related transaction_detail rows
+  DELETE FROM transaction_details
+  WHERE transaction_id = OLD.id;
+
+  -- Execute the trigger logic that you originally had in your transaction_detail trigger
+  -- Replace "your_trigger_logic_here" with your actual trigger logic
+   UPDATE products
+  SET sold = sold - (SELECT SUM(quantity) FROM temp_transaction_detail WHERE product_id = products.id);
+
+  -- Drop the temporary table
+  DROP TEMPORARY TABLE IF EXISTS temp_transaction_detail;
+END;
